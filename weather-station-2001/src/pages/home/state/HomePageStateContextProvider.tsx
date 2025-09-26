@@ -1,4 +1,4 @@
-import { useReducer } from "react"
+import { useEffect, useReducer } from "react"
 import {
 	type THomePageStateContext,
 	type TDispatchValue,
@@ -84,6 +84,14 @@ const reducer = <TKey extends keyof THomePageStateContext, TValue extends THomeP
 
 export function HomePageStateContextProvider(props: React.PropsWithChildren<unknown>) {
 	const [state, dispatch] = useReducer(reducer, DEFAULT_HOME_PAGE_STATE)
+
+	useEffect(() => {
+		state.mainBackgroundAudio.loop = true
+		state.mainBackgroundAudio.volume = 0.1
+		state.mainBackgroundAudio.play().catch((error) => {
+			console.error("Error playing background audio:", error)
+		})
+	}, [state.mainBackgroundAudio])
 
 	return <HomePageStateContext.Provider value={{ ...state, dispatch }}>{props.children}</HomePageStateContext.Provider>
 }

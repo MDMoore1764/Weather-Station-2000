@@ -24,6 +24,7 @@ export type THomePageStateContext = {
 	address: TLocationFormState
 	weatherLoading: boolean
 	oneLineAddress: string | null
+	mainBackgroundAudio: HTMLAudioElement
 	activeSection: TSection
 	dispatch: <TKey extends keyof THomePageStateContext, TValue extends THomePageStateContext[TKey]>(
 		value: TDispatchValue<TKey, TValue>
@@ -64,6 +65,7 @@ export const DEFAULT_HOME_PAGE_STATE: THomePageStateContext = {
 	address: { ...DEFAULT_LOCATION_FORM_STATE },
 	oneLineAddress: null,
 	weatherLoading: false,
+	mainBackgroundAudio: new Audio("/public/resources/audio/BachgroundMuseik.mp3"),
 	activeSection: null,
 	dispatch: () => void 0
 }
