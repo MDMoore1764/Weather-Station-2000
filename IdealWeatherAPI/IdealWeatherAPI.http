@@ -1,0 +1,6 @@
+@IdealWeatherAPI_HostAddress = http://localhost:5208
+
+GET {{IdealWeatherAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
