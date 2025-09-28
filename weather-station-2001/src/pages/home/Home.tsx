@@ -5,6 +5,7 @@ import { DateTime } from "luxon"
 import AppFooter from "./app_footer/AppFooter"
 import { HomePageStateContextProvider } from "./state/HomePageStateContextProvider"
 import AddressForm from "./address_form/AddressForm"
+import LoadingPage from "./loading_page/LoadingPage"
 
 function HomePage() {
 	const homePageContext = useHomePageContext()
@@ -20,9 +21,10 @@ function HomePage() {
 	}, [homePageContext])
 
 	return (
-		<div>
+		<div className="flex flex-col h-full w-full align-middle">
 			<AppTitle currentTime={homePageContext.currentTime} />
-			<AddressForm />
+			{homePageContext.appState === "address_input" && <AddressForm />}
+			{homePageContext.appState === "loading_weather" && <LoadingPage />}
 			<AppFooter />
 		</div>
 	)

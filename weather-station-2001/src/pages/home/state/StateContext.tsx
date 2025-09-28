@@ -2,6 +2,8 @@ import { createContext, useContext } from "react"
 import { DateTime } from "luxon"
 import type { TLocationFormState } from "../home.types"
 
+export type AppState = "address_input" | "weather_display" | "loading_weather" | "error" | null
+
 export const DEFAULT_LOCATION_FORM_STATE: TLocationFormState = {
 	city: null,
 	postalCode: null,
@@ -23,6 +25,7 @@ export type THomePageStateContext = {
 	currentTime: DateTime
 	address: TLocationFormState
 	weatherLoading: boolean
+	appState: AppState
 	oneLineAddress: string | null
 	mainBackgroundAudio: HTMLAudioElement
 	activeSection: TSection
@@ -63,6 +66,7 @@ export type TDistpatchAction =
 export const DEFAULT_HOME_PAGE_STATE: THomePageStateContext = {
 	currentTime: DateTime.now(),
 	address: { ...DEFAULT_LOCATION_FORM_STATE },
+	appState: "address_input",
 	oneLineAddress: null,
 	weatherLoading: false,
 	mainBackgroundAudio: new Audio("/public/resources/audio/BachgroundMuseik.mp3"),

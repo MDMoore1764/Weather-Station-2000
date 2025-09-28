@@ -4,7 +4,13 @@ import { useHomePageContext, type TSection } from "../state/StateContext"
 function AddressForm() {
 	const homePageStateContext = useHomePageContext()
 
-	const handleSubmit = useCallback(() => {}, [])
+	const handleSubmit = useCallback(
+		(e?: React.FormEvent<HTMLFormElement>) => {
+			e?.preventDefault()
+			homePageStateContext.dispatch({ action: "appState", payload: "loading_weather" })
+		},
+		[homePageStateContext]
+	)
 
 	const handleSubmitOnEnterKeydownEvent = useCallback(
 		(event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -40,7 +46,7 @@ function AddressForm() {
 	)
 
 	return (
-		<form>
+		<form onSubmit={handleSubmit}>
 			<div className="max-w-2xl mx-auto mb-8">
 				<div className="bg-gray-900 p-6 rounded-lg border-4 border-cyan-400 shadow-lg shadow-cyan-400/50">
 					{/* Quick Location Input */}
@@ -56,7 +62,7 @@ function AddressForm() {
 							type="text"
 							value={homePageStateContext.oneLineAddress ?? ""}
 							onChange={setOneLineAddress}
-							placeholder="City, State or ZIP"
+							placeholder="Enter Your Address • Test Your Luck • Surprise Us All"
 							className="w-full px-3 py-2 bg-black border-2 border-green-400 text-green-300 font-mono focus:outline-none focus:border-purple-400 focus:shadow-lg focus:shadow-cyan-400/50"
 							onKeyDown={handleSubmitOnEnterKeydownEvent}
 							onFocus={() => setActiveSection("onelineaddress")}
@@ -152,21 +158,22 @@ function AddressForm() {
 
 					<div className="flex space-x-4">
 						<button
-							onClick={handleSubmit}
-							disabled={homePageStateContext.weatherLoading}
-							className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-2 px-4 uppercase tracking-wider border-2 border-white hover:from-pink-600 hover:to-purple-600 transition-all duration-300 shadow-lg shadow-purple-500/50 disabled:opacity-50"
+							type="submit"
+							disabled={homePageStateContext.appState === "loading_weather"}
+							className="transition:200ms flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-2 px-4 uppercase tracking-wider border-2 border-white hover:from-pink-600 hover:to-purple-600 transition-all duration-300 shadow-lg shadow-purple-500/50 disabled:opacity-50"
 						>
 							{homePageStateContext.weatherLoading ? "SCANNING..." : "GET WEATHER"}
 						</button>
 						<button
 							onClick={getCurrentLocation}
+							disabled={homePageStateContext.appState === "loading_weather"}
 							className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold py-2 px-4 uppercase tracking-wider border-2 border-white hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 shadow-lg shadow-cyan-500/50"
 						>
 							GPS
 						</button>
 						<button
 							onClick={clearAddressForm}
-							className="bg-gradient-to-r from-red-600 to-orange-600 text-white font-bold py-2 px-4 uppercase tracking-wider border-2 border-white hover:from-orange-600 hover:to-red-600 transition-all duration-300 shadow-lg shadow-red-500/50"
+							className="bg-gradient-to-r from-red-600 to-orange-600 text-white font-bold py-2 px-4 uppercase tracking-wider border-2 border-white hover:from-orange-600 hover:to-red-600 duration-300 shadow-lg shadow-red-500/50"
 						>
 							CLEAR
 						</button>
