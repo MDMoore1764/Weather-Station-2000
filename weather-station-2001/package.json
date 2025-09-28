@@ -11,11 +11,15 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.13",
+    "@types/react-modal": "^3.16.3",
+    "@types/yup": "^0.29.14",
     "lucide-react": "^0.544.0",
     "luxon": "^3.7.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "tone": "^15.1.22"
+    "react-modal": "^3.16.3",
+    "tone": "^15.1.22",
+    "yup": "^1.7.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",

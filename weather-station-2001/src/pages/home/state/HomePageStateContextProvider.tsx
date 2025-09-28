@@ -11,6 +11,8 @@ const reducer = <TKey extends keyof THomePageStateContext, TValue extends THomeP
 	state: THomePageStateContext,
 	value: TDispatchValue<TKey, TValue>
 ): THomePageStateContext => {
+	console.log(value)
+
 	switch (value.action) {
 		case "updateCity": {
 			return {
@@ -62,6 +64,7 @@ const reducer = <TKey extends keyof THomePageStateContext, TValue extends THomeP
 		case "clearAddressForm": {
 			return {
 				...state,
+				validationError: null,
 				address: {
 					...DEFAULT_LOCATION_FORM_STATE
 				}

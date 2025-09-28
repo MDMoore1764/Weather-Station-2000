@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react"
+import { createContext, useContext, type ReactNode } from "react"
 import { DateTime } from "luxon"
 import type { TLocationFormState } from "../home.types"
 
@@ -27,6 +27,7 @@ export type THomePageStateContext = {
 	weatherLoading: boolean
 	appState: AppState
 	oneLineAddress: string | null
+	validationError: ReactNode | null
 	mainBackgroundAudio: HTMLAudioElement
 	activeSection: TSection
 	dispatch: <TKey extends keyof THomePageStateContext, TValue extends THomePageStateContext[TKey]>(
@@ -68,6 +69,7 @@ export const DEFAULT_HOME_PAGE_STATE: THomePageStateContext = {
 	address: { ...DEFAULT_LOCATION_FORM_STATE },
 	appState: "address_input",
 	oneLineAddress: null,
+	validationError: null,
 	weatherLoading: false,
 	mainBackgroundAudio: new Audio("/public/resources/audio/BachgroundMuseik.mp3"),
 	activeSection: null,

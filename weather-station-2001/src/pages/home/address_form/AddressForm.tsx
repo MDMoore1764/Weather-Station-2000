@@ -1,5 +1,8 @@
 import React, { useCallback } from "react"
 import { useHomePageContext, type TSection } from "../state/StateContext"
+import { weatherFormValidationPath, weatherFormValidationSchema } from "./AddressForm.validation"
+import type { ValidationError } from "yup"
+import { ValidationErrorModal } from "./ValidationErrorModal"
 
 function AddressForm() {
 	const homePageStateContext = useHomePageContext()
@@ -7,7 +10,26 @@ function AddressForm() {
 	const handleSubmit = useCallback(
 		(e?: React.FormEvent<HTMLFormElement>) => {
 			e?.preventDefault()
+
+			//Validate form:
+
+			homePageStateContext.dispatch({ action: "validationError", payload: null })
+
+			try {
+				weatherFormValidationSchema.validateSync(
+					{ addressForm: homePageStateContext.address, quickSearch: homePageStateContext.oneLineAddress },
+					{ abortEarly: false }
+				)
+			} catch (err) {
+				const error = (err as ValidationError).inner.find((e) => e.path === weatherFormValidationPath)?.message
+				if (error) {
+					homePageStateContext.dispatch({ action: "validationError", payload: error })
+					return
+				}
+			}
+
 			homePageStateContext.dispatch({ action: "appState", payload: "loading_weather" })
+			//issue request
 		},
 		[homePageStateContext]
 	)
@@ -46,7 +68,7 @@ function AddressForm() {
 	)
 
 	return (
-		<form onSubmit={handleSubmit}>
+		<form onSubmit={handleSubmit} className="w-full">
 			<div className="max-w-2xl mx-auto mb-8">
 				<div className="bg-gray-900 p-6 rounded-lg border-4 border-cyan-400 shadow-lg shadow-cyan-400/50">
 					{/* Quick Location Input */}
@@ -165,6 +187,7 @@ function AddressForm() {
 							{homePageStateContext.weatherLoading ? "SCANNING..." : "GET WEATHER"}
 						</button>
 						<button
+							type="button"
 							onClick={getCurrentLocation}
 							disabled={homePageStateContext.appState === "loading_weather"}
 							className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold py-2 px-4 uppercase tracking-wider border-2 border-white hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 shadow-lg shadow-cyan-500/50"
@@ -172,12 +195,22 @@ function AddressForm() {
 							GPS
 						</button>
 						<button
+							type="button"
 							onClick={clearAddressForm}
 							className="bg-gradient-to-r from-red-600 to-orange-600 text-white font-bold py-2 px-4 uppercase tracking-wider border-2 border-white hover:from-orange-600 hover:to-red-600 duration-300 shadow-lg shadow-red-500/50"
 						>
 							CLEAR
 						</button>
 					</div>
+
+					{homePageStateContext.validationError && (
+						<ValidationErrorModal
+							onClose={homePageStateContext.dispatch.bind(null, {
+								action: "validationError",
+								payload: null
+							})}
+						/>
+					)}
 				</div>
 			</div>
 		</form>
