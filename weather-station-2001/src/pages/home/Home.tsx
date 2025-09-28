@@ -22,7 +22,7 @@ function HomePage() {
 
 	return (
 		<div className="flex flex-col h-full w-full align-middle">
-			<AppTitle currentTime={homePageContext.currentTime} />
+			{homePageContext.appState === "address_input" && <AppTitle currentTime={homePageContext.currentTime} />}
 			{homePageContext.appState === "address_input" && <AddressForm />}
 			{homePageContext.appState === "loading_weather" && <LoadingPage />}
 			<AppFooter />

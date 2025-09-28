@@ -24,7 +24,7 @@ function LoadingPage(props: TProps) {
 	}, [averageLoadingMs])
 
 	return (
-		<div className="text-center mb-8">
+		<div className="text-center mb-8 flex-1">
 			<div className="text-6xl text-yellow-400 mb-6 animate-bounce font-bold">⚡ SCANNING ATMOSPHERE ⚡</div>
 
 			<div className="relative flex justify-center items-center mb-8">
