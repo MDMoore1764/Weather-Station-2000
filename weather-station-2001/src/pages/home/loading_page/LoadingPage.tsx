@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo } from "react"
+import LoadingBar from "../../../components/loading_bar/LoadingBar"
 
 type TLoadingPercent = number
 
@@ -22,6 +23,21 @@ function LoadingPage(props: TProps) {
 			})
 		}, 10)
 	}, [averageLoadingMs])
+
+	const visbleStateTextSet = useMemo(() => {
+		const nTextFields = 10
+		const maxTextfields = 10
+		const set: number[] = []
+		for (let i = 1; i <= nTextFields; i++) {
+			if (percentState < i * maxTextfields) {
+				break
+			}
+
+			set.push(i)
+		}
+
+		return set
+	}, [percentState])
 
 	return (
 		<div className="text-center mb-8 flex-1">
@@ -49,52 +65,49 @@ function LoadingPage(props: TProps) {
 				</div>
 			</div>
 
-			<div className="w-80 mx-auto mb-6">
-				<div className="bg-gray-800 rounded-full h-6 border-4 border-cyan-400 shadow-lg shadow-cyan-400/50 relative overflow-hidden">
-					<div
-						className="bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500 h-full rounded-full animate-pulse relative"
-						style={{ width: `${percentState}%` }}
-					>
-						<div className="absolute top-0 right-0 w-4 h-full bg-white opacity-80 animate-pulse"></div>
-					</div>
+			<LoadingBar text={"ANALYZING WEATHER DATA..."} percent={percentState} />
 
-					<div className="absolute inset-0 flex items-center justify-center">
-						<span className="text-white text-xs font-bold uppercase tracking-widest drop-shadow-lg">
-							ANALYZING WEATHER DATA...
-						</span>
-					</div>
-				</div>
-			</div>
-
-			<div className="space-y-2 font-mono text-sm text-left" style={{ width: "fit-content", margin: "0 auto" }}>
-				<div className="text-green-400 animate-pulse">▶ Connecting to weather satellites...</div>
-				<div className="text-yellow-400 animate-pulse" style={{ animationDelay: "0.5s" }}>
-					▶ Processing atmospheric data...
-				</div>
-				<div className="text-cyan-400 animate-pulse" style={{ animationDelay: "1s" }}>
-					▶ Calculating weather patterns...
-				</div>
-				<div className="text-pink-400 animate-pulse" style={{ animationDelay: "1.5s" }}>
-					▶ Finalizing forecast analysis...
-				</div>
+			<div className="space-y-2 font-mono text-sm text-left h-65 w-80" style={{ margin: "0 auto" }}>
+				{visbleStateTextSet[0] && (
+					<div className="text-pink-400 animate-pulse">▶ Scanning for weather satellites...</div>
+				)}
+				{visbleStateTextSet[1] && (
+					<div className="text-pink-600 animate-pulse">▶ Triangulating target weather satellite...</div>
+				)}
+				{visbleStateTextSet[2] && (
+					<div className="text-purple-400 animate-pulse">▶ Connecting to weather satellites...</div>
+				)}
+				{visbleStateTextSet[3] && (
+					<div className="text-purple-600 animate-pulse">▶ Performing atmospherescape scan...</div>
+				)}
+				{visbleStateTextSet[4] && (
+					<div className="text-yellow-400 animate-pulse">▶ Performing atmospheric anomaly scan..</div>
+				)}
+				{visbleStateTextSet[5] && <div className="text-yellow-600 animate-pulse">▶ Processing atmospheric data...</div>}
+				{visbleStateTextSet[6] && (
+					<div className="text-orange-400 animate-pulse">▶ Calculating weather patterns...</div>
+				)}
+				{visbleStateTextSet[7] && <div className="text-orange-600 animate-pulse">▶ Interpolating actions...</div>}
+				{visbleStateTextSet[8] && <div className="text-cyan-400 animate-pulse">▶ Assessing anomaly severity...</div>}
+				{visbleStateTextSet[9] && <div className="text-cyan-600 animate-pulse">▶ Finalizing forecast analysis...</div>}
 			</div>
 
 			<div className="absolute inset-0 pointer-events-none overflow-hidden">
 				<div
 					className="absolute top-20 left-1/4 w-1 h-1 bg-cyan-400 rounded-full animate-bounce opacity-60"
-					style={{ animationDelay: "0s", animationDuration: "2s" }}
+					style={{ animationDuration: `${0 * averageLoadingMs}ms` }}
 				></div>
 				<div
 					className="absolute top-32 right-1/3 w-1 h-1 bg-pink-400 rounded-full animate-bounce opacity-60"
-					style={{ animationDelay: "0.5s", animationDuration: "2.5s" }}
+					style={{ animationDuration: `${0.25 * averageLoadingMs}ms` }}
 				></div>
 				<div
 					className="absolute top-28 left-1/2 w-1 h-1 bg-yellow-400 rounded-full animate-bounce opacity-60"
-					style={{ animationDelay: "1s", animationDuration: "3s" }}
+					style={{ animationDuration: `${0.5 * averageLoadingMs}ms` }}
 				></div>
 				<div
 					className="absolute top-36 right-1/4 w-1 h-1 bg-green-400 rounded-full animate-bounce opacity-60"
-					style={{ animationDelay: "1.5s", animationDuration: "2s" }}
+					style={{ animationDuration: `${0.75 * averageLoadingMs}ms` }}
 				></div>
 			</div>
 
