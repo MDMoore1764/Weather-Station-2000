@@ -4,22 +4,10 @@ import { BoomBox, VolumeOff } from "lucide-react"
 
 function AppFooter() {
 	const homePageContext = useHomePageContext()
+	console.log(homePageContext)
 
-	const toggleAudio = useCallback(() => {
-		if (!homePageContext.mainBackgroundAudio) {
-			return
-		}
+	const toggleAudio = useCallback(() => homePageContext.dispatch({ action: "toggleAudio" }), [homePageContext])
 
-		if (homePageContext.mainBackgroundAudio.paused) {
-			homePageContext.mainBackgroundAudio.play().catch((error) => {
-				console.error("Error playing background audio:", error)
-			})
-		} else {
-			homePageContext.mainBackgroundAudio.pause()
-		}
-	}, [homePageContext.mainBackgroundAudio])
-
-	// const hoverSound = useRef(new Audio("/public/resources/audio/hover-sound.mp3"));
 	return (
 		<div>
 			<div className="text-center mt-12 text-cyan-400 font-mono text-sm mb-6">
@@ -34,7 +22,7 @@ function AppFooter() {
 						homePageContext.mainBackgroundAudio.paused ? "" : "animate-pulse"
 					} transition-transform duration-200  bg-black bg-opacity-50 border-2 border-purple-400 text-purple-300 p-3 rounded-full shadow-md hover:shadow-purple-500/50 hover:bg-purple-600 hover:text-white`}
 				>
-					{homePageContext.mainBackgroundAudio.paused ? <BoomBox /> : <VolumeOff />}
+					{homePageContext.audioPlaying ? <BoomBox /> : <VolumeOff />}
 				</button>
 			</div>
 		</div>

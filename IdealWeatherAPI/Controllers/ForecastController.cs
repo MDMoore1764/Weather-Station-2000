@@ -6,7 +6,7 @@ using System.Net;
 namespace IdealWeatherAPI.Controllers;
 
 [ApiController]
-[Route("[controller]/{version:apiVersion}")]
+[Route("[controller]/v{version:apiVersion}")]
 public class ForecastController : ControllerBase
 {
     private readonly ILogger<ForecastController> _logger;
@@ -23,7 +23,7 @@ public class ForecastController : ControllerBase
     /// </summary>
     /// <param name="address">The United States address of the target location.</param>
     /// <returns>The 7-day weather forecast.</returns>
-    [HttpGet("Forecast/ByAddress")]
+    [HttpGet("ByAddress")]
     public async Task<IActionResult> GetForecastByAddressAsync([FromQuery] Address address)
     {
         var forecast = await _forecastingService.GetWeatherForecast(address);
@@ -35,7 +35,7 @@ public class ForecastController : ControllerBase
     /// </summary>
     /// <param name="coordinates">The coordinates of the target location, within the United States.</param>
     /// <returns>The 7-day weather forecast.</returns>
-    [HttpGet("Forecast/ByCoordinates")]
+    [HttpGet("ByCoordinates")]
     public async Task<IActionResult> GetForecastByCoordinatesAsync([FromQuery] Coordinates coordinates)
     {
         var forecast = await _forecastingService.GetWeatherForecast(coordinates);

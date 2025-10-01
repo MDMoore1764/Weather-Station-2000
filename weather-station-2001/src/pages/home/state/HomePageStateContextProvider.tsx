@@ -11,8 +11,6 @@ const reducer = <TKey extends keyof THomePageStateContext, TValue extends THomeP
 	state: THomePageStateContext,
 	value: TDispatchValue<TKey, TValue>
 ): THomePageStateContext => {
-	console.log(value)
-
 	switch (value.action) {
 		case "updateCity": {
 			return {
@@ -77,6 +75,27 @@ const reducer = <TKey extends keyof THomePageStateContext, TValue extends THomeP
 				activeSection: value.payload
 			}
 		}
+
+		case "toggleAudio": {
+			debugger
+			console.log("audio toggled!")
+			// if (!state.mainBackgroundAudio) {
+			// 	return state
+			// }
+
+			if (state.mainBackgroundAudio.paused) {
+				state.mainBackgroundAudio.play().catch((error) => {
+					console.error("Error playing background audio:", error)
+				})
+			} else {
+				state.mainBackgroundAudio.pause()
+			}
+
+			return {
+				...state,
+				audioPlaying: !state.audioPlaying
+			}
+		}
 	}
 
 	return {
@@ -89,12 +108,13 @@ export function HomePageStateContextProvider(props: React.PropsWithChildren<unkn
 	const [state, dispatch] = useReducer(reducer, DEFAULT_HOME_PAGE_STATE)
 
 	useEffect(() => {
+		state.audioPlaying = true
 		state.mainBackgroundAudio.loop = true
 		state.mainBackgroundAudio.volume = 0.1
 		state.mainBackgroundAudio.play().catch((error) => {
 			console.error("Error playing background audio:", error)
 		})
-	}, [state.mainBackgroundAudio])
+	}, [state, state.mainBackgroundAudio])
 
 	return <HomePageStateContext.Provider value={{ ...state, dispatch }}>{props.children}</HomePageStateContext.Provider>
 }

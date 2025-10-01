@@ -1,6 +1,6 @@
 import { createContext, useContext, type ReactNode } from "react"
 import { DateTime } from "luxon"
-import type { TLocationFormState } from "../home.types"
+import type { TGeolocationFormState, TLocationFormState } from "../home.types"
 
 export type AppState = "address_input" | "weather_display" | "loading_weather" | "error" | null
 
@@ -24,10 +24,12 @@ export type TDispatchValue<TKey extends keyof THomePageStateContext, TValue exte
 export type THomePageStateContext = {
 	currentTime: DateTime
 	address: TLocationFormState
+	geolocation?: TGeolocationFormState
 	weatherLoading: boolean
 	appState: AppState
 	oneLineAddress: string | null
 	validationError: ReactNode | null
+	audioPlaying: boolean
 	mainBackgroundAudio: HTMLAudioElement
 	activeSection: TSection
 	dispatch: <TKey extends keyof THomePageStateContext, TValue extends THomePageStateContext[TKey]>(
@@ -63,6 +65,9 @@ export type TDistpatchAction =
 			action: "activeSection"
 			payload: TSection
 	  }
+	| {
+			action: "toggleAudio"
+	  }
 
 export const DEFAULT_HOME_PAGE_STATE: THomePageStateContext = {
 	currentTime: DateTime.now(),
@@ -70,7 +75,9 @@ export const DEFAULT_HOME_PAGE_STATE: THomePageStateContext = {
 	appState: "address_input",
 	oneLineAddress: null,
 	validationError: null,
+	geolocation: undefined,
 	weatherLoading: false,
+	audioPlaying: true,
 	mainBackgroundAudio: new Audio("/public/resources/audio/BachgroundMuseik.mp3"),
 	activeSection: null,
 	dispatch: () => void 0

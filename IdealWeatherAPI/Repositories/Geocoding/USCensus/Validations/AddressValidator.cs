@@ -14,7 +14,7 @@ namespace IdealWeatherAPI.Repositories.Geocoding.USCensus.Validations
         /// <summary>
         /// Validates the address for use with the US Census Geocoding Service's "address" search type. 
         /// </summary>
-        /// <returns>True if the street and postal code OR the street, postal code, and state are present.</returns>
+        /// <returns>True if the street and postal code OR the street, city, and state are present.</returns>
         public bool AddressIsValid()
         {
             if (!string.IsNullOrWhiteSpace(_address.Street) && !string.IsNullOrWhiteSpace(_address.Postalcode))

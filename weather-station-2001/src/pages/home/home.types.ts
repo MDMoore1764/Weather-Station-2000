@@ -5,3 +5,8 @@ export type TLocationFormState = {
 	state: string | null
 	postalCode: string | null
 }
+
+export type TGeolocationFormState = {
+	longitude: number
+	latitude: number
+}

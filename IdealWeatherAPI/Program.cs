@@ -65,6 +65,15 @@ public class Program
     {
         app.MapDefaultEndpoints();
 
+        app.UseCors(configureCors =>
+        {
+            configureCors
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .SetIsOriginAllowedToAllowWildcardSubdomains()
+            .WithOrigins("http://localhost:5173");
+        });
+
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();

@@ -1,5 +1,3 @@
-import React from "react"
-
 type TProps = {
 	text?: string
 	percent: number
@@ -13,7 +11,7 @@ function LoadingBar(props: TProps) {
 					className="bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500 h-full rounded-full animate-pulse relative"
 					style={{ width: `${props.percent}%` }}
 				>
-					<div className="absolute top-0 right-0 w-4 h-full bg-white opacity-80 animate-pulse"></div>
+					<div className="absolute top-0 right-0 w-4 h-full bg-white opacity-100 animate-pulse"></div>
 				</div>
 
 				<div className="absolute inset-0 flex items-center justify-center">

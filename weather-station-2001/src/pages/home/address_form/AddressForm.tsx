@@ -1,11 +1,45 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useMemo } from "react"
 import { useHomePageContext, type TSection } from "../state/StateContext"
 import { weatherFormValidationPath, weatherFormValidationSchema } from "./AddressForm.validation"
 import type { ValidationError } from "yup"
 import { ValidationErrorModal } from "./ValidationErrorModal"
+import { useQuery } from "@tanstack/react-query"
+import { fetchForecastQueryOptions } from "../../../apis/weather_client/WeatherClient"
 
 function AddressForm() {
 	const homePageStateContext = useHomePageContext()
+
+	const forecastQueryState = useMemo(() => {
+		if (
+			homePageStateContext.geolocation &&
+			homePageStateContext.geolocation.latitude &&
+			homePageStateContext.geolocation.longitude
+		) {
+			return {
+				latitude: homePageStateContext.geolocation.latitude,
+				longitude: homePageStateContext.geolocation.longitude
+			}
+		}
+
+		return {
+			streetNumber: homePageStateContext.address.streetNumber ?? "",
+			streetName: homePageStateContext.address.streetName ?? "",
+			city: homePageStateContext.address.city ?? "",
+			postalCode: homePageStateContext.address.postalCode ?? "",
+			state: homePageStateContext.address.state ?? ""
+		}
+	}, [
+		homePageStateContext.address.city,
+		homePageStateContext.address.postalCode,
+		homePageStateContext.address.state,
+		homePageStateContext.address.streetName,
+		homePageStateContext.address.streetNumber,
+		homePageStateContext.geolocation
+	])
+
+	const options = fetchForecastQueryOptions(forecastQueryState)
+
+	const forecastQuery = useQuery(options)
 
 	const handleSubmit = useCallback(
 		(e?: React.FormEvent<HTMLFormElement>) => {
@@ -29,9 +63,9 @@ function AddressForm() {
 			}
 
 			homePageStateContext.dispatch({ action: "appState", payload: "loading_weather" })
-			//issue request
+			forecastQuery.refetch()
 		},
-		[homePageStateContext]
+		[forecastQuery, homePageStateContext]
 	)
 
 	const handleSubmitOnEnterKeydownEvent = useCallback(

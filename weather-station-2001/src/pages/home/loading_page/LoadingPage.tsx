@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo } from "react"
 import LoadingBar from "../../../components/loading_bar/LoadingBar"
+import { useHomePageContext } from "../state/StateContext"
 
 type TLoadingPercent = number
 
@@ -8,6 +9,7 @@ type TProps = {
 }
 
 function LoadingPage(props: TProps) {
+	const homePageContext = useHomePageContext()
 	const averageLoadingMs = useMemo(() => props.averageLoadingMs ?? 2000, [props.averageLoadingMs])
 	const [percentState, setPercentState] = React.useState<TLoadingPercent>(0)
 
@@ -41,6 +43,17 @@ function LoadingPage(props: TProps) {
 
 	return (
 		<div className="text-center mb-8 flex-1">
+			<button
+				className="absolute top-2 left-2 text-red-600 border-4 rounded-full border-red-500 hover:shadow-lg hover:shadow-red-500"
+				onClick={() =>
+					homePageContext.dispatch({
+						action: "appState",
+						payload: "address_input"
+					})
+				}
+			>
+				ABORT SCAN
+			</button>
 			<div className="text-6xl text-yellow-400 mb-6 animate-bounce font-bold">⚡ SCANNING ATMOSPHERE ⚡</div>
 
 			<div className="relative flex justify-center items-center mb-8">
@@ -81,7 +94,7 @@ function LoadingPage(props: TProps) {
 					<div className="text-purple-600 animate-pulse">▶ Performing atmospherescape scan...</div>
 				)}
 				{visbleStateTextSet[4] && (
-					<div className="text-yellow-400 animate-pulse">▶ Performing atmospheric anomaly scan..</div>
+					<div className="text-yellow-400 animate-pulse">▶ Performing atmospheric anomaly scan...</div>
 				)}
 				{visbleStateTextSet[5] && <div className="text-yellow-600 animate-pulse">▶ Processing atmospheric data...</div>}
 				{visbleStateTextSet[6] && (
