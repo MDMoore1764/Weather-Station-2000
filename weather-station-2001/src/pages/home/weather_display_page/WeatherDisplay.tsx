@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react"
 import type { TForecast } from "../../../apis/weather_client/WeatherClient.types"
 import { Cloud, CloudDrizzle, CloudRain, Droplets, Moon, Snowflake, Sun, Wind, Zap } from "lucide-react"
 import { useHomePageContext } from "../state/StateContext"
@@ -218,7 +217,7 @@ const WeatherDisplay = (props: TProps) => {
 				)}
 			</div>
 
-			<style jsx>{`
+			<style>{`
 				@keyframes marquee {
 					0% {
 						transform: translateX(100%);

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo } from "react"
 import LoadingBar from "../../../components/loading_bar/LoadingBar"
 import { useHomePageContext } from "../state/StateContext"
+const audio = new Audio("/public/resources/audio/Sonar.mp3")
 
 type TLoadingPercent = number
 
@@ -40,6 +41,16 @@ function LoadingPage(props: TProps) {
 
 		return set
 	}, [percentState])
+
+	useEffect(() => {
+		if (homePageContext.audioPlaying) {
+			audio.volume = 0.3
+			audio.playbackRate = 1.0
+			audio.loop = false
+			audio.currentTime = 0.9
+			audio.play()
+		}
+	}, [])
 
 	return (
 		<div className="text-center mb-8 flex-1">

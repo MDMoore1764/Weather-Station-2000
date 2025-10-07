@@ -164,6 +164,14 @@ export function HomePageStateContextProvider(props: React.PropsWithChildren<unkn
 		state.mainBackgroundAudio.play().catch((error) => {
 			console.error("Error playing background audio:", error)
 		})
+
+		state.mainBackgroundAudio.onpause = () => {
+			dispatch({ action: "setAudioPlayback", payload: false })
+		}
+
+		state.mainBackgroundAudio.onplay = () => {
+			dispatch({ action: "setAudioPlayback", payload: true })
+		}
 	}, [])
 
 	useEffect(() => {

@@ -35,7 +35,8 @@ export const ValidationErrorModal = (props: TProps) => {
 			closeTimeoutMS={1000}
 			shouldCloseOnOverlayClick={true}
 			shouldCloseOnEsc={true}
-			className={"fixed inset-0 flex items-center justify-center p-4 z-50 outline-none bg-gray-900/90"}
+			overlayClassName={"fixed inset-0 flex items-center justify-center p-4 z-50 outline-none bg-gray-900/95"}
+			className={"flex items-center justify-center p-4 z-51"}
 		>
 			<div className="mb-6 relative ">
 				{/* Main Error Container */}
@@ -106,7 +107,7 @@ export const ValidationErrorModal = (props: TProps) => {
 						{/* Footer */}
 						<div className="mt-6 text-center">
 							<div className="text-purple-400 text-xs font-mono uppercase tracking-widest animate-pulse">
-								🎯 SELECT ANY ONE OPTION TO PROCEED 🎯
+								🎯 Try again with one of the above options to proceed 🎯
 							</div>
 						</div>
 
