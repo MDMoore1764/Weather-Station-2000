@@ -17,12 +17,12 @@ namespace IdealWeatherAPI.Layers.Application.Repositories.Geocoding.USCensus.Val
         /// <returns>True if the street and postal code OR the street, city, and state are present.</returns>
         public bool AddressIsValid()
         {
-            if (!string.IsNullOrWhiteSpace(_address.Street) && !string.IsNullOrWhiteSpace(_address.Postalcode))
+            if (!string.IsNullOrWhiteSpace(_address.StreetName) && !string.IsNullOrWhiteSpace(_address.Postalcode))
             {
                 return true;
             }
 
-            if (!string.IsNullOrWhiteSpace(_address.Street) && !string.IsNullOrWhiteSpace(_address.City) && !string.IsNullOrWhiteSpace(_address.State))
+            if (!string.IsNullOrWhiteSpace(_address.StreetName) && !string.IsNullOrWhiteSpace(_address.City) && !string.IsNullOrWhiteSpace(_address.State))
             {
                 return true;
             }

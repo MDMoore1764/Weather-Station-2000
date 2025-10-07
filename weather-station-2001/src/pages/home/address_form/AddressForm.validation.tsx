@@ -1,11 +1,11 @@
 import * as yup from "yup"
 
-const streetNumberSchema = yup
-	.number()
-	.typeError("Street number must be a valid number")
-	.positive("Street number must be positive")
-	.integer("Street number must be a whole number")
-	.required("Street number is required")
+// const streetNumberSchema = yup
+// 	.number()
+// 	.typeError("Street number must be a valid number")
+// 	.positive("Street number must be positive")
+// 	.integer("Street number must be a whole number")
+// 	.required("Street number is required")
 
 const streetNameSchema = yup
 	.string()
@@ -66,8 +66,7 @@ export const weatherFormValidationSchema = yup
 		"Please provide either a quick search location or complete address information",
 		function (values) {
 			const { quickSearch, addressForm } = values
-			const { streetNumber, streetName, city, state, postalCode } = addressForm || {}
-
+			const { streetName, city, state, postalCode } = addressForm || {}
 			//First, try and validate the quick search.
 			try {
 				quickSearchSchema.validateSync(quickSearch)
@@ -78,7 +77,7 @@ export const weatherFormValidationSchema = yup
 
 			//Try validate the street number, name, and zipcode option.
 			try {
-				streetNumberSchema.validateSync(Number(streetNumber))
+				// streetNumberSchema.validateSync(Number(streetNumber))
 				streetNameSchema.validateSync(streetName)
 				zipCodeSchema.validateSync(postalCode)
 				return true
@@ -88,7 +87,7 @@ export const weatherFormValidationSchema = yup
 
 			//Try validate the street number, name, city, and state option.
 			try {
-				streetNumberSchema.validateSync(Number(streetNumber))
+				// streetNumberSchema.validateSync(Number(streetNumber))
 				streetNameSchema.validateSync(streetName)
 				citySchema.validateSync(city)
 				stateSchema.validateSync(state)

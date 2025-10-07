@@ -117,7 +117,7 @@ function AddressForm(props: TProps) {
 					</div>
 
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-						<div>
+						{/* <div>
 							<div className="block text-pink-300 text-xs font-bold mb-1 uppercase tracking-wider">Street Number</div>
 							<input
 								name="address-line1"
@@ -133,14 +133,14 @@ function AddressForm(props: TProps) {
 								onFocus={() => setActiveSection("address")}
 								onBlur={() => setActiveSection(null)}
 							/>
-						</div>
+						</div> */}
 
 						<div>
-							<div className="block text-pink-300 text-xs font-bold mb-1 uppercase tracking-wider">Street Name</div>
+							<div className="block text-pink-300 text-xs font-bold mb-1 uppercase tracking-wider">Street</div>
 							<input
 								type="text"
-								name="address-line2"
-								autoComplete="address-line2"
+								name="address-line1"
+								autoComplete="address-line1"
 								value={homePageStateContext.formState.address?.streetName ?? ""}
 								onInput={(e) => homePageStateContext.dispatch({ action: "updateStreetName", payload: e.target.value })}
 								placeholder="Main Street"
@@ -183,7 +183,7 @@ function AddressForm(props: TProps) {
 							/>
 						</div>
 
-						<div className="md:col-span-2">
+						<div>
 							<div className="block text-cyan-300 text-xs font-bold mb-1 uppercase tracking-wider">ZIP Code</div>
 							<input
 								type="text"

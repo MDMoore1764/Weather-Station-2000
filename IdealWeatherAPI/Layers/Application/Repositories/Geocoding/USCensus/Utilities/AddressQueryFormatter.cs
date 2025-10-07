@@ -18,7 +18,7 @@ namespace IdealWeatherAPI.Layers.Application.Repositories.Geocoding.USCensus.Uti
 
             EvaluateAndAddParameter(namedParameters, nameof(_address.City), _address.City);
             EvaluateAndAddParameter(namedParameters, nameof(_address.State), _address.State);
-            EvaluateAndAddParameter(namedParameters, nameof(_address.Street), _address.Street);
+            EvaluateAndAddParameter(namedParameters, "Street", _address.StreetName);
             EvaluateAndAddParameter(namedParameters, "Zip", _address.Postalcode);
 
             var castParameters = namedParameters.Select(kvp => $"{kvp.Key}={kvp.Value}");

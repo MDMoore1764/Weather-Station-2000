@@ -1,39 +1,38 @@
 import { queryOptions } from "@tanstack/react-query"
 import type { TGeolocationFormState, TLocationFormState } from "../../pages/home/home.types"
 import { USAAddressParser } from "../../utilities/USAAddressParser"
-
-const baseURL = import.meta.env.VITE_FORECAST_API_URL
-const apiVersion = import.meta.env.VITE_FORECAST_API_VERSION
+import type { TForecast } from "./WeatherClient.types"
 
 export function fetchForecastQueryOptions(query: TLocationFormState | TGeolocationFormState | string | null) {
+	return queryOptions({
+		queryKey: ["forecast", query],
+		enabled: query != null,
+		queryFn: () => fetchForecastData(query),
+		staleTime: 60 * 5 * 1000, // cache for 5 minutes
+		retry: false,
+		refetchInterval: 60 * 5 * 1000 // refetch every 5 minutes
+	})
+}
+
+export async function fetchForecastData(query: TLocationFormState | TGeolocationFormState | string | null) {
 	if (query == null) {
-		return queryOptions({
-			enabled: true,
-			networkMode: "always",
-			queryKey: ["forecast"],
-			queryFn: undefined
-		})
+		throw new Error("Query is null.")
 	}
 
 	if (typeof query === "object" && "latitude" in query && "longitude" in query) {
-		return queryOptions({
-			enabled: true,
-			networkMode: "always",
-			queryKey: ["forecast", query.longitude, query.latitude] as [string, number, number],
-			queryFn: async (values) => {
-				const [endpoint, longitude, latitude] = values.queryKey
+		const url = new URL(
+			`forecast/${import.meta.env.VITE_FORECAST_API_VERSION}/ByCoordinates?x=${query.longitude}&y=${query.latitude}`,
+			import.meta.env.VITE_FORECAST_API_URL
+		)
 
-				const url = new URL(`${endpoint}/${apiVersion}/ByCoordinates?x=${longitude}&y=${latitude}`, baseURL)
+		const response = await fetch(url)
 
-				const response = await fetch(url)
+		if (response.ok) {
+			return (await response.json()) as TForecast
+		}
 
-				if (response.ok) {
-					return await response.json()
-				}
-
-				handleErrorResponse(response)
-			}
-		})
+		await handleErrorResponse(response)
+		return
 	}
 
 	let streetNumber = "",
@@ -58,54 +57,40 @@ export function fetchForecastQueryOptions(query: TLocationFormState | TGeolocati
 		streetName = query.streetName || ""
 	}
 
-	return queryOptions({
-		enabled: true,
-		queryKey: ["forecast", streetNumber, streetName, state, city, postalCode] as [
-			string,
-			string | undefined,
-			string | undefined,
-			string | undefined,
-			string | undefined,
-			string | undefined
-		],
-		queryFn: async (values) => {
-			const [endpoint, streetNumber, streetName, state, city, postalCode] = values.queryKey
+	const pathParts: string[] = []
 
-			const pathParts: string[] = []
+	if (streetNumber) {
+		pathParts.push(`structureNumber=${encodeURIComponent(streetNumber)}`)
+	}
 
-			if (streetNumber) {
-				pathParts.push(`structureNumber=${encodeURIComponent(streetNumber)}`)
-			}
+	if (streetName) {
+		pathParts.push(`streetName=${encodeURIComponent(streetName)}`)
+	}
 
-			if (streetName) {
-				pathParts.push(`streetName=${encodeURIComponent(streetName)}`)
-			}
+	if (state) {
+		pathParts.push(`state=${encodeURIComponent(state)}`)
+	}
 
-			if (state) {
-				pathParts.push(`state=${encodeURIComponent(state)}`)
-			}
+	if (city) {
+		pathParts.push(`city=${encodeURIComponent(city)}`)
+	}
 
-			if (city) {
-				pathParts.push(`city=${encodeURIComponent(city)}`)
-			}
+	if (postalCode) {
+		pathParts.push(`postalCode=${encodeURIComponent(postalCode)}`)
+	}
 
-			if (postalCode) {
-				pathParts.push(`postalCode=${encodeURIComponent(postalCode)}`)
-			}
+	const path = `forecast/${import.meta.env.VITE_FORECAST_API_VERSION}/ByAddress?${pathParts.join("&")}`
 
-			const path = `${endpoint}/${apiVersion}/ByAddress?${pathParts.join("&")}`
+	const url = new URL(path, import.meta.env.VITE_FORECAST_API_URL)
 
-			const url = new URL(path, baseURL)
+	const response = await fetch(url)
 
-			const response = await fetch(url)
+	if (response.ok) {
+		return (await response.json()) as TForecast
+	}
 
-			if (response.ok) {
-				return await response.json()
-			}
-
-			handleErrorResponse(response)
-		}
-	})
+	await handleErrorResponse(response)
+	return
 }
 
 export async function handleErrorResponse(response: Response) {
