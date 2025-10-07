@@ -1,60 +1,105 @@
 import { useEffect, useReducer } from "react"
 import {
 	type THomePageStateContext,
-	type TDispatchValue,
 	DEFAULT_HOME_PAGE_STATE,
 	HomePageStateContext,
-	DEFAULT_LOCATION_FORM_STATE
+	DEFAULT_LOCATION_FORM_STATE,
+	type TDistpatchAction
 } from "./StateContext"
 
-const reducer = <TKey extends keyof THomePageStateContext, TValue extends THomePageStateContext[TKey]>(
-	state: THomePageStateContext,
-	value: TDispatchValue<TKey, TValue>
-): THomePageStateContext => {
+const reducer = (state: THomePageStateContext, value: TDistpatchAction): THomePageStateContext => {
 	switch (value.action) {
+		case "setOneLineAddress": {
+			return {
+				...state,
+				formState: {
+					...state.formState,
+					oneLineAddress: value.payload
+				}
+			}
+		}
+		case "setAppState": {
+			return {
+				...state,
+				appState: value.payload
+			}
+		}
+		case "setValidationError": {
+			return {
+				...state,
+				validationError: value.payload
+			}
+		}
+		case "setForecastFetchError": {
+			return {
+				...state,
+				fetchError: value.payload
+			}
+		}
+		case "setSubmissionState": {
+			return {
+				...state,
+				submissionState: value.payload
+			}
+		}
 		case "updateCity": {
 			return {
 				...state,
-				address: {
-					...state.address,
-					city: value.payload
+				formState: {
+					...state.formState,
+					address: {
+						...state.formState.address,
+						city: value.payload
+					}
 				}
 			}
 		}
 		case "updateState": {
 			return {
 				...state,
-				address: {
-					...state.address,
-					state: value.payload
+				formState: {
+					...state.formState,
+					address: {
+						...state.formState.address,
+						state: value.payload
+					}
 				}
 			}
 		}
 		case "updateStreetName": {
 			return {
 				...state,
-				address: {
-					...state.address,
-					streetName: value.payload
+				formState: {
+					...state.formState,
+					address: {
+						...state.formState.address,
+						streetName: value.payload
+					}
 				}
 			}
 		}
 		case "updateStreetNumber": {
 			return {
 				...state,
-				address: {
-					...state.address,
+				formState: {
+					...state.formState,
+					address: {
+						...state.formState.address,
 
-					streetNumber: value.payload
+						streetNumber: value.payload
+					}
 				}
 			}
 		}
 		case "updatePostalCode": {
 			return {
 				...state,
-				address: {
-					...state.address,
-					postalCode: value.payload
+				formState: {
+					...state.formState,
+					address: {
+						...state.formState.address,
+						postalCode: value.payload
+					}
 				}
 			}
 		}
@@ -63,8 +108,12 @@ const reducer = <TKey extends keyof THomePageStateContext, TValue extends THomeP
 			return {
 				...state,
 				validationError: null,
-				address: {
-					...DEFAULT_LOCATION_FORM_STATE
+				formState: {
+					geolocation: null,
+					oneLineAddress: "",
+					address: {
+						...DEFAULT_LOCATION_FORM_STATE
+					}
 				}
 			}
 		}
@@ -77,7 +126,6 @@ const reducer = <TKey extends keyof THomePageStateContext, TValue extends THomeP
 		}
 
 		case "toggleAudio": {
-			debugger
 			console.log("audio toggled!")
 			// if (!state.mainBackgroundAudio) {
 			// 	return state
@@ -98,10 +146,7 @@ const reducer = <TKey extends keyof THomePageStateContext, TValue extends THomeP
 		}
 	}
 
-	return {
-		...state,
-		[value.action]: value.payload
-	}
+	throw new Error(`Invalid value "${value}" provided.`)
 }
 
 export function HomePageStateContextProvider(props: React.PropsWithChildren<unknown>) {

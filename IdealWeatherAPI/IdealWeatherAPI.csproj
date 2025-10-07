@@ -26,7 +26,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Middleware\" />
+    <Folder Include="Configuration\Middleware\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="..\.dockerignore" Link="Configuration\.dockerignore" />
   </ItemGroup>
 
 </Project>

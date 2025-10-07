@@ -14,33 +14,43 @@ export const DEFAULT_LOCATION_FORM_STATE: TLocationFormState = {
 
 export type TSection = "onelineaddress" | "address" | null
 
-export type TDispatchValue<TKey extends keyof THomePageStateContext, TValue extends THomePageStateContext[TKey]> =
-	| {
-			action: TKey
-			payload: TValue
-	  }
-	| TDistpatchAction
-
 export type THomePageStateContext = {
 	currentTime: DateTime
-	address: TLocationFormState
-	geolocation?: TGeolocationFormState
-	weatherLoading: boolean
+	formState: {
+		address: TLocationFormState
+		geolocation: TGeolocationFormState | null
+		oneLineAddress: string
+	}
+	submissionState: TLocationFormState | TGeolocationFormState | string | null
 	appState: AppState
-	oneLineAddress: string | null
 	validationError: ReactNode | null
+	fetchError: string | null
 	audioPlaying: boolean
 	mainBackgroundAudio: HTMLAudioElement
 	activeSection: TSection
-	dispatch: <TKey extends keyof THomePageStateContext, TValue extends THomePageStateContext[TKey]>(
-		value: TDispatchValue<TKey, TValue>
-	) => void
+	dispatch: (value: TDistpatchAction) => void
 }
 
 export type TDistpatchAction =
 	| {
 			action: "updateStreetNumber"
 			payload: string
+	  }
+	| {
+			action: "setOneLineAddress"
+			payload: string
+	  }
+	| {
+			action: "setValidationError"
+			payload: string | null
+	  }
+	| {
+			action: "setForecastFetchError"
+			payload: string | null
+	  }
+	| {
+			action: "setSubmissionState"
+			payload: TLocationFormState | TGeolocationFormState | string | null
 	  }
 	| {
 			action: "updateCity"
@@ -66,21 +76,28 @@ export type TDistpatchAction =
 			payload: TSection
 	  }
 	| {
+			action: "setAppState"
+			payload: AppState
+	  }
+	| {
 			action: "toggleAudio"
 	  }
 
 export const DEFAULT_HOME_PAGE_STATE: THomePageStateContext = {
 	currentTime: DateTime.now(),
-	address: { ...DEFAULT_LOCATION_FORM_STATE },
+	formState: {
+		address: { ...DEFAULT_LOCATION_FORM_STATE },
+		oneLineAddress: "",
+		geolocation: null
+	},
+	submissionState: null,
 	appState: "address_input",
-	oneLineAddress: null,
 	validationError: null,
-	geolocation: undefined,
-	weatherLoading: false,
 	audioPlaying: true,
 	mainBackgroundAudio: new Audio("/public/resources/audio/BachgroundMuseik.mp3"),
 	activeSection: null,
-	dispatch: () => void 0
+	dispatch: () => void 0,
+	fetchError: null
 }
 
 export const HomePageStateContext = createContext<THomePageStateContext>({ ...DEFAULT_HOME_PAGE_STATE })

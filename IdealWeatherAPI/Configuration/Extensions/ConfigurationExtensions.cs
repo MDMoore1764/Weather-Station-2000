@@ -1,5 +1,4 @@
-﻿using IdealWeatherAPI.Configurations;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using System.Runtime.CompilerServices;
 
 namespace IdealWeatherAPI.Configuration.Extensions

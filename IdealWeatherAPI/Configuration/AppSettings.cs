@@ -1,9 +1,10 @@
-﻿namespace IdealWeatherAPI.Configurations
+﻿namespace IdealWeatherAPI.Configuration
 {
     public class AppSettings
     {
         public static string DefaultEnv => "development";
         public static string Env => Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?.ToLower() ?? DefaultEnv;
+        public static bool IsDevelopment => AppSettings.Env.Equals("development", StringComparison.OrdinalIgnoreCase);
         public IConfiguration Configuration { get; }
         public LoggingSettings Logging { get; set; } = new();
         public string AllowedHosts { get; set; } = string.Empty;
@@ -13,13 +14,13 @@
         public APISettings APIs { get; set; } = new();
         public AppSettings(IConfiguration configuration)
         {
-            ConfigurationBinder.Bind(configuration, this);
-            this.Configuration = configuration;
+            configuration.Bind(this);
+            Configuration = configuration;
         }
 
         public void UpdateFrom(IConfiguration configuration)
         {
-            ConfigurationBinder.Bind(configuration, this);
+            configuration.Bind(this);
         }
     }
 

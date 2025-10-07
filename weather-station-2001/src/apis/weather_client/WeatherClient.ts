@@ -1,14 +1,24 @@
 import { queryOptions } from "@tanstack/react-query"
-import type { TWeatherQuery } from "./WeatherClient.types"
+import type { TGeolocationFormState, TLocationFormState } from "../../pages/home/home.types"
+import { USAAddressParser } from "../../utilities/USAAddressParser"
 
 const baseURL = import.meta.env.VITE_FORECAST_API_URL
 const apiVersion = import.meta.env.VITE_FORECAST_API_VERSION
 
-export function fetchForecastQueryOptions(query: TWeatherQuery) {
-	//Do it this way so that TanStack's query caching will work on new objects, so long as they share the same lat and lon
-	if ("latitude" in query && "longitude" in query) {
+export function fetchForecastQueryOptions(query: TLocationFormState | TGeolocationFormState | string | null) {
+	if (query == null) {
 		return queryOptions({
-			enabled: false,
+			enabled: true,
+			networkMode: "always",
+			queryKey: ["forecast"],
+			queryFn: undefined
+		})
+	}
+
+	if (typeof query === "object" && "latitude" in query && "longitude" in query) {
+		return queryOptions({
+			enabled: true,
+			networkMode: "always",
 			queryKey: ["forecast", query.longitude, query.latitude] as [string, number, number],
 			queryFn: async (values) => {
 				const [endpoint, longitude, latitude] = values.queryKey
@@ -26,9 +36,31 @@ export function fetchForecastQueryOptions(query: TWeatherQuery) {
 		})
 	}
 
+	let streetNumber = "",
+		streetName = "",
+		state = "",
+		city = "",
+		postalCode = ""
+
+	if (typeof query == "string") {
+		const addressParser = new USAAddressParser(query)
+
+		streetNumber = addressParser.streetNumber || ""
+		state = addressParser.state || ""
+		city = addressParser.city || ""
+		postalCode = addressParser.zipCode || ""
+		streetName = addressParser.streetName || ""
+	} else {
+		streetNumber = query.streetNumber || ""
+		state = query.state || ""
+		city = query.city || ""
+		postalCode = query.postalCode || ""
+		streetName = query.streetName || ""
+	}
+
 	return queryOptions({
-		enabled: false,
-		queryKey: ["forecast", query.streetNumber, query.streetName, query.state, query.city, query.postalCode] as [
+		enabled: true,
+		queryKey: ["forecast", streetNumber, streetName, state, city, postalCode] as [
 			string,
 			string | undefined,
 			string | undefined,
@@ -76,6 +108,17 @@ export function fetchForecastQueryOptions(query: TWeatherQuery) {
 	})
 }
 
-function handleErrorResponse(response: Response) {
-	throw new Error(`System Malfunction Code ${response.status}: ${response.statusText}`)
+export async function handleErrorResponse(response: Response) {
+	let problemDetails: TProblemDetails | null = null
+	try {
+		problemDetails = (await response.json()) as TProblemDetails
+	} catch {
+		//Empty
+	}
+
+	if (problemDetails != null) {
+		throw new Error(`${problemDetails.title}(CODE ${response.status}): ${problemDetails.detail}`)
+	}
+
+	throw new Error(`System Malfunction ${response.status}: ${response.statusText}`)
 }

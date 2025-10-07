@@ -45,12 +45,16 @@ function LoadingPage(props: TProps) {
 		<div className="text-center mb-8 flex-1">
 			<button
 				className="absolute top-2 left-2 text-red-600 border-4 rounded-full border-red-500 hover:shadow-lg hover:shadow-red-500"
-				onClick={() =>
+				onClick={() => {
 					homePageContext.dispatch({
-						action: "appState",
+						action: "setSubmissionState",
+						payload: null
+					})
+					homePageContext.dispatch({
+						action: "setAppState",
 						payload: "address_input"
 					})
-				}
+				}}
 			>
 				ABORT SCAN
 			</button>

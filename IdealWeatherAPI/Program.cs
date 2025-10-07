@@ -1,13 +1,14 @@
 
 using Asp.Versioning;
+using IdealWeatherAPI.Configuration;
 using IdealWeatherAPI.Configuration.Extensions;
-using IdealWeatherAPI.Configurations;
-using IdealWeatherAPI.Repositories.Forecasting;
-using IdealWeatherAPI.Repositories.Forecasting.NationalWeatherService;
-using IdealWeatherAPI.Repositories.Geocoding;
-using IdealWeatherAPI.Repositories.Geocoding.USCensus;
+using IdealWeatherAPI.Layers.Application.Repositories.Forecasting;
+using IdealWeatherAPI.Layers.Application.Repositories.Forecasting.NationalWeatherService;
+using IdealWeatherAPI.Layers.Application.Repositories.Geocoding;
+using IdealWeatherAPI.Layers.Application.Repositories.Geocoding.USCensus;
+using IdealWeatherAPI.Layers.Application.Services.Forecasting;
+using IdealWeatherAPI.Layers.Presentation.ExceptionManagement.Middleware;
 using IdealWeatherAPI.ServiceDefaults;
-using IdealWeatherAPI.Services.Forecasting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdealWeatherAPI;
@@ -43,9 +44,14 @@ public class Program
         builder.Services
         .ConfigureLogging(builder, settings)
         .ConfigureOpenTelemetry(settings)
-        .AddOpenApi()
-        .ConfigureSwagger()
         .AddControllers();
+
+        if (AppSettings.IsDevelopment)
+        {
+            builder.Services
+            .AddOpenApi()
+            .ConfigureSwagger();
+        }
 
         InjectDependencies(builder.Services);
 
@@ -63,6 +69,8 @@ public class Program
 
     private static WebApplication ConfigureApplication(WebApplication app)
     {
+        app.UseMiddleware<GlobalExceptionMiddleware>();
+
         app.MapDefaultEndpoints();
 
         app.UseCors(configureCors =>
@@ -74,7 +82,7 @@ public class Program
             .WithOrigins("http://localhost:5173");
         });
 
-        if (app.Environment.IsDevelopment())
+        if (AppSettings.IsDevelopment)
         {
             app.MapOpenApi();
             app.UseSwagger();

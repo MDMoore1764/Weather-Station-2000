@@ -23,6 +23,8 @@ const validStates = [
 
 type TProps = {
 	onClose: () => void
+	title?: string
+	subtitle?: string
 }
 
 export const ValidationErrorModal = (props: TProps) => {
@@ -50,10 +52,13 @@ export const ValidationErrorModal = (props: TProps) => {
 									<span className="text-red-900 text-lg font-bold">⚠</span>
 								</div>
 								<div>
-									<h3 className="text-yellow-300 text-xl font-bold uppercase tracking-wider animate-pulse">
-										VALIDATION ERROR
+									<h3 className="text-yellow-300 text-xl font-bold uppercase tracking-wider animate-pulse uppercase">
+										{props.title ?? "VALIDATION ERROR"}
 									</h3>
-									<div className="text-red-300 text-sm font-mono">SYSTEM MALFUNCTION</div>
+									<div className="text-red-300 text-sm font-mono uppercase">
+										{" "}
+										{props.subtitle ?? "SYSTEM MALFUNCTION"}
+									</div>
 								</div>
 							</div>
 						</div>

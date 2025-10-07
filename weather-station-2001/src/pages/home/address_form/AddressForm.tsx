@@ -1,45 +1,14 @@
-import React, { useCallback, useMemo } from "react"
+import React, { useCallback } from "react"
 import { useHomePageContext, type TSection } from "../state/StateContext"
 import { weatherFormValidationPath, weatherFormValidationSchema } from "./AddressForm.validation"
 import type { ValidationError } from "yup"
-import { ValidationErrorModal } from "./ValidationErrorModal"
-import { useQuery } from "@tanstack/react-query"
-import { fetchForecastQueryOptions } from "../../../apis/weather_client/WeatherClient"
 
-function AddressForm() {
+type TProps = {
+	loading: boolean
+}
+
+function AddressForm(props: TProps) {
 	const homePageStateContext = useHomePageContext()
-
-	const forecastQueryState = useMemo(() => {
-		if (
-			homePageStateContext.geolocation &&
-			homePageStateContext.geolocation.latitude &&
-			homePageStateContext.geolocation.longitude
-		) {
-			return {
-				latitude: homePageStateContext.geolocation.latitude,
-				longitude: homePageStateContext.geolocation.longitude
-			}
-		}
-
-		return {
-			streetNumber: homePageStateContext.address.streetNumber ?? "",
-			streetName: homePageStateContext.address.streetName ?? "",
-			city: homePageStateContext.address.city ?? "",
-			postalCode: homePageStateContext.address.postalCode ?? "",
-			state: homePageStateContext.address.state ?? ""
-		}
-	}, [
-		homePageStateContext.address.city,
-		homePageStateContext.address.postalCode,
-		homePageStateContext.address.state,
-		homePageStateContext.address.streetName,
-		homePageStateContext.address.streetNumber,
-		homePageStateContext.geolocation
-	])
-
-	const options = fetchForecastQueryOptions(forecastQueryState)
-
-	const forecastQuery = useQuery(options)
 
 	const handleSubmit = useCallback(
 		(e?: React.FormEvent<HTMLFormElement>) => {
@@ -47,25 +16,33 @@ function AddressForm() {
 
 			//Validate form:
 
-			homePageStateContext.dispatch({ action: "validationError", payload: null })
+			homePageStateContext.dispatch({ action: "setValidationError", payload: null })
 
 			try {
 				weatherFormValidationSchema.validateSync(
-					{ addressForm: homePageStateContext.address, quickSearch: homePageStateContext.oneLineAddress },
+					{
+						addressForm: homePageStateContext.formState.address,
+						quickSearch: homePageStateContext.formState.oneLineAddress
+					},
 					{ abortEarly: false }
 				)
 			} catch (err) {
 				const error = (err as ValidationError).inner.find((e) => e.path === weatherFormValidationPath)?.message
 				if (error) {
-					homePageStateContext.dispatch({ action: "validationError", payload: error })
+					homePageStateContext.dispatch({ action: "setValidationError", payload: error })
 					return
 				}
 			}
 
-			homePageStateContext.dispatch({ action: "appState", payload: "loading_weather" })
-			forecastQuery.refetch()
+			homePageStateContext.dispatch({
+				action: "setSubmissionState",
+				payload:
+					homePageStateContext.formState.geolocation ||
+					homePageStateContext.formState.oneLineAddress ||
+					homePageStateContext.formState.address
+			})
 		},
-		[forecastQuery, homePageStateContext]
+		[homePageStateContext]
 	)
 
 	const handleSubmitOnEnterKeydownEvent = useCallback(
@@ -85,7 +62,7 @@ function AddressForm() {
 
 	const setOneLineAddress = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
-			homePageStateContext.dispatch({ action: "oneLineAddress", payload: event.target.value })
+			homePageStateContext.dispatch({ action: "setOneLineAddress", payload: event.target.value })
 		},
 		[homePageStateContext]
 	)
@@ -102,7 +79,7 @@ function AddressForm() {
 	)
 
 	return (
-		<form onSubmit={handleSubmit} className="w-full">
+		<form onSubmit={handleSubmit} className="w-full" autoComplete="on">
 			<div className="max-w-2xl mx-auto mb-8">
 				<div className="bg-gray-900 p-6 rounded-lg border-4 border-cyan-400 shadow-lg shadow-cyan-400/50">
 					{/* Quick Location Input */}
@@ -115,9 +92,10 @@ function AddressForm() {
 							Quick Search
 						</div>
 						<input
+							autoComplete="one-line-address"
 							type="text"
-							value={homePageStateContext.oneLineAddress ?? ""}
-							onChange={setOneLineAddress}
+							value={homePageStateContext.formState.oneLineAddress ?? ""}
+							onInput={setOneLineAddress}
 							placeholder="Enter Your Address • Test Your Luck • Surprise Us All"
 							className="w-full px-3 py-2 bg-black border-2 border-green-400 text-green-300 font-mono focus:outline-none focus:border-purple-400 focus:shadow-lg focus:shadow-cyan-400/50"
 							onKeyDown={handleSubmitOnEnterKeydownEvent}
@@ -142,9 +120,11 @@ function AddressForm() {
 						<div>
 							<div className="block text-pink-300 text-xs font-bold mb-1 uppercase tracking-wider">Street Number</div>
 							<input
+								name="address-line1"
+								autoComplete="address-line1"
 								type="text"
-								value={homePageStateContext.address.streetNumber ?? ""}
-								onChange={(e) =>
+								value={homePageStateContext.formState.address?.streetNumber ?? ""}
+								onInput={(e) =>
 									homePageStateContext.dispatch({ action: "updateStreetNumber", payload: e.target.value })
 								}
 								placeholder="123"
@@ -159,8 +139,10 @@ function AddressForm() {
 							<div className="block text-pink-300 text-xs font-bold mb-1 uppercase tracking-wider">Street Name</div>
 							<input
 								type="text"
-								value={homePageStateContext.address.streetName ?? ""}
-								onChange={(e) => homePageStateContext.dispatch({ action: "updateStreetName", payload: e.target.value })}
+								name="address-line2"
+								autoComplete="address-line2"
+								value={homePageStateContext.formState.address?.streetName ?? ""}
+								onInput={(e) => homePageStateContext.dispatch({ action: "updateStreetName", payload: e.target.value })}
 								placeholder="Main Street"
 								className="w-full px-2 py-2 bg-black border-2 border-pink-400 text-pink-300 font-mono text-sm focus:outline-none focus:border-green-400 focus:shadow-lg focus:shadow-pink-400/50"
 								onKeyDown={handleMoveNextKeydownEvent}
@@ -173,8 +155,10 @@ function AddressForm() {
 							<div className="block text-yellow-300 text-xs font-bold mb-1 uppercase tracking-wider">City</div>
 							<input
 								type="text"
-								value={homePageStateContext.address.city ?? ""}
-								onChange={(e) => homePageStateContext.dispatch({ action: "updateCity", payload: e.target.value })}
+								name="address-level2"
+								autoComplete="address-level2"
+								value={homePageStateContext.formState.address?.city ?? ""}
+								onInput={(e) => homePageStateContext.dispatch({ action: "updateCity", payload: e.target.value })}
 								placeholder="San Francisco"
 								className="w-full px-2 py-2 bg-black border-2 border-purple-400 text-purple-300 font-mono text-sm focus:outline-none focus:border-cyan-400 focus:shadow-lg focus:shadow-purple-400/50"
 								onKeyDown={handleMoveNextKeydownEvent}
@@ -187,8 +171,10 @@ function AddressForm() {
 							<div className="block text-purple-300 text-xs font-bold mb-1 uppercase tracking-wider">State</div>
 							<input
 								type="text"
-								value={homePageStateContext.address.state ?? ""}
-								onChange={(e) => homePageStateContext.dispatch({ action: "updateState", payload: e.target.value })}
+								name="address-level1"
+								autoComplete="address-level1"
+								value={homePageStateContext.formState.address?.state ?? ""}
+								onInput={(e) => homePageStateContext.dispatch({ action: "updateState", payload: e.target.value })}
 								placeholder="CA"
 								className="w-full px-2 py-2 bg-black border-2 border-purple-400 text-purple-300 font-mono text-sm focus:outline-none focus:border-cyan-400 focus:shadow-lg focus:shadow-purple-400/50"
 								onKeyDown={handleMoveNextKeydownEvent}
@@ -201,8 +187,10 @@ function AddressForm() {
 							<div className="block text-cyan-300 text-xs font-bold mb-1 uppercase tracking-wider">ZIP Code</div>
 							<input
 								type="text"
-								value={homePageStateContext.address.postalCode ?? ""}
-								onChange={(e) => homePageStateContext.dispatch({ action: "updatePostalCode", payload: e.target.value })}
+								name="postal-code"
+								autoComplete="postal-code"
+								value={homePageStateContext.formState.address?.postalCode ?? ""}
+								onInput={(e) => homePageStateContext.dispatch({ action: "updatePostalCode", payload: e.target.value })}
 								placeholder="94102"
 								className="w-full px-2 py-2 bg-black border-2 border-cyan-400 text-cyan-300 font-mono text-sm focus:outline-none focus:border-green-400 focus:shadow-lg focus:shadow-cyan-400/50"
 								onKeyDown={handleMoveNextKeydownEvent}
@@ -218,7 +206,7 @@ function AddressForm() {
 							disabled={homePageStateContext.appState === "loading_weather"}
 							className="transition:200ms flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-2 px-4 uppercase tracking-wider border-2 border-white hover:from-pink-600 hover:to-purple-600 transition-all duration-300 shadow-lg shadow-purple-500/50 disabled:opacity-50"
 						>
-							{homePageStateContext.weatherLoading ? "SCANNING..." : "GET WEATHER"}
+							{props.loading ? "SCANNING..." : "GET WEATHER"}
 						</button>
 						<button
 							type="button"
@@ -236,15 +224,6 @@ function AddressForm() {
 							CLEAR
 						</button>
 					</div>
-
-					{homePageStateContext.validationError && (
-						<ValidationErrorModal
-							onClose={homePageStateContext.dispatch.bind(null, {
-								action: "validationError",
-								payload: null
-							})}
-						/>
-					)}
 				</div>
 			</div>
 		</form>
