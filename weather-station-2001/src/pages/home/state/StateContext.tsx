@@ -25,8 +25,6 @@ export type THomePageStateContext = {
 	appState: AppState
 	validationError: ReactNode | null
 	fetchError: string | null
-	audioPlaying: boolean
-	mainBackgroundAudio: HTMLAudioElement
 	activeSection: TSection
 	dispatch: (value: TDistpatchAction) => void
 }
@@ -98,8 +96,6 @@ export const DEFAULT_HOME_PAGE_STATE: THomePageStateContext = {
 	submissionState: null,
 	appState: "address_input",
 	validationError: null,
-	audioPlaying: true,
-	mainBackgroundAudio: new Audio("/public/resources/audio/BachgroundMuseik.mp3"),
 	activeSection: null,
 	dispatch: () => void 0,
 	fetchError: null

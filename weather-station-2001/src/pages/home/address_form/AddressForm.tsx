@@ -1,7 +1,8 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useEffect } from "react"
 import { useHomePageContext, type TSection } from "../state/StateContext"
 import { weatherFormValidationPath, weatherFormValidationSchema } from "./AddressForm.validation"
 import type { ValidationError } from "yup"
+import { useMusicManager } from "../../../hooks/music-manager/UseMusicManager"
 
 type TProps = {
 	loading: boolean
@@ -9,6 +10,11 @@ type TProps = {
 
 function AddressForm(props: TProps) {
 	const homePageStateContext = useHomePageContext()
+	const musicManager = useMusicManager()
+
+	useEffect(() => {
+		musicManager.changeSong("/public/resources/audio/BachgroundMuseik.mp3")
+	}, [])
 
 	const handleSubmit = useCallback(
 		(e?: React.FormEvent<HTMLFormElement>) => {

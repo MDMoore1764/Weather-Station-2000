@@ -9,11 +9,14 @@ import { fetchForecastQueryOptions } from "../../apis/weather_client/WeatherClie
 import { ValidationErrorModal } from "./address_form/ValidationErrorModal"
 import { useEffect } from "react"
 import WeatherDisplay from "./weather_display_page/WeatherDisplay"
+import { MusicManagerProvider } from "../../hooks/music-manager/MusicManagerProvider"
+import { useMusicManager } from "../../hooks/music-manager/UseMusicManager"
 
 const homePageQueryClient = new QueryClient()
 
 function HomePage() {
 	const homePageContext = useHomePageContext()
+	const musicManager = useMusicManager()
 
 	const forecastQuery = useQuery(fetchForecastQueryOptions(homePageContext.submissionState))
 
@@ -55,9 +58,7 @@ function HomePage() {
 					}}
 				/>
 			</div>
-			{(homePageContext.appState === "address_input" || homePageContext.appState === "weather_display") && (
-				<AppTitle currentTime={homePageContext.currentTime} />
-			)}
+			{homePageContext.appState === "address_input" && <AppTitle currentTime={homePageContext.currentTime} />}
 			{homePageContext.appState === "address_input" && <AddressForm loading={forecastQuery.isLoading} />}
 			{homePageContext.appState === "loading_weather" && <LoadingPage />}
 			{homePageContext.appState === "weather_display" && <WeatherDisplay forecast={forecastQuery.data || null} />}
@@ -96,8 +97,10 @@ function HomePage() {
 
 export const Home = () => (
 	<QueryClientProvider client={homePageQueryClient}>
-		<HomePageStateContextProvider>
-			<HomePage />
-		</HomePageStateContextProvider>
+		<MusicManagerProvider>
+			<HomePageStateContextProvider>
+				<HomePage />
+			</HomePageStateContextProvider>
+		</MusicManagerProvider>
 	</QueryClientProvider>
 )

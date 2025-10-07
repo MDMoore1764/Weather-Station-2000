@@ -1,8 +1,10 @@
+import { useMusicManager } from "../../../hooks/music-manager/UseMusicManager"
 import { useHomePageContext } from "../state/StateContext"
 import { BoomBox, VolumeOff } from "lucide-react"
 
 function AppFooter() {
 	const homePageContext = useHomePageContext()
+	const musicManager = useMusicManager()
 
 	return (
 		<div>
@@ -13,14 +15,12 @@ function AppFooter() {
 			</div>
 			<div>
 				<button
-					onClick={() =>
-						homePageContext.dispatch({ action: "setAudioPlayback", payload: !homePageContext.audioPlaying })
-					}
+					onClick={() => (musicManager.playing ? musicManager.pause() : musicManager.play())}
 					className={`${
-						homePageContext.mainBackgroundAudio.paused ? "" : "animate-pulse"
+						!musicManager.playing ? "" : "animate-pulse"
 					} transition-transform duration-200  bg-black bg-opacity-50 border-2 border-purple-400 text-purple-300 p-3 rounded-full shadow-md hover:shadow-purple-500/50 hover:bg-purple-600 hover:text-white`}
 				>
-					{homePageContext.audioPlaying ? <BoomBox /> : <VolumeOff />}
+					{musicManager.playing ? <BoomBox /> : <VolumeOff />}
 				</button>
 			</div>
 		</div>

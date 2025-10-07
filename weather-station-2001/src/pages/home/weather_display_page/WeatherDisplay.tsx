@@ -1,6 +1,7 @@
 import type { TForecast } from "../../../apis/weather_client/WeatherClient.types"
-import { Cloud, CloudDrizzle, CloudRain, Droplets, Moon, Snowflake, Sun, Wind, Zap } from "lucide-react"
+import { Cloud, CloudDrizzle, CloudRain, Droplets, Moon, Snowflake, Sun, TriangleAlert, Wind, Zap } from "lucide-react"
 import { useHomePageContext } from "../state/StateContext"
+import WeatherAlertsBanner from "./weather_alerts_banner/WeatherAlertsBanner"
 
 type TProps = {
 	forecast: TForecast | null
@@ -25,9 +26,13 @@ const WeatherDisplay = (props: TProps) => {
 	return (
 		<div>
 			{/* Weather Alerts Banner */}
-			<WeatherAlertsBanner alerts={props.forecast.alerts} />
+			{/* <WeatherAlertsBanner alerts={props.forecast.alerts} /> */}
+
+			<div className="absolute top-0 left-0 right-0 ">
+				<WeatherAlertsBanner alerts={props.forecast.alerts} />
+			</div>
 			<button
-				className="absolute top-2 left-2 text-red-600 border-4 rounded-full border-red-500 hover:shadow-lg hover:shadow-red-500 
+				className="fixed bottom-2 left-2 text-red-600 border-4 rounded-full border-red-500 hover:shadow-lg hover:shadow-red-500 
              focus:outline-none focus:ring-0"
 				onClick={() => {
 					homePageContext.dispatch({
@@ -44,7 +49,7 @@ const WeatherDisplay = (props: TProps) => {
 				NEW SCAN
 			</button>
 
-			<div className="container mx-auto px-4 py-0 relative z-10">
+			<div className="container mx-auto px-4 py-0 mt-35 relative z-10">
 				{/* Current Weather - Hero Section */}
 				<div className="max-w-6xl mx-auto mb-8">
 					<div className="bg-gray-900 border-4 border-pink-500 rounded-lg p-5 shadow-2xl shadow-pink-500/50 relative">
@@ -181,7 +186,9 @@ const WeatherDisplay = (props: TProps) => {
 									<div className="flex items-start space-x-4">
 										<div className="flex-shrink-0">
 											<div className="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center animate-bounce">
-												<span className="text-red-900 text-2xl font-bold">⚠</span>
+												<span className="text-red-900 text-2xl font-bold">
+													<TriangleAlert />
+												</span>
 											</div>
 										</div>
 
@@ -191,12 +198,12 @@ const WeatherDisplay = (props: TProps) => {
 											<p className="text-red-200 font-mono text-sm mb-3">{alert.headline}</p>
 
 											{alert.description && (
-												<p className="text-red-300 text-sm mb-3 leading-relaxed">{alert.description}</p>
+												<p className="text-red-300 text-sm mb-3 leading-relaxed text-justify">{alert.description}</p>
 											)}
 
 											<div className="flex flex-wrap gap-4 text-xs font-mono">
 												<div className="bg-black border border-yellow-400 px-2 py-1 rounded">
-													<span className="text-yellow-400">SEVERITY:</span>{" "}
+													8<span className="text-yellow-400">SEVERITY:</span>{" "}
 													<span className="text-white">{alert.severity}</span>
 												</div>
 												<div className="bg-black border border-yellow-400 px-2 py-1 rounded">
@@ -216,20 +223,6 @@ const WeatherDisplay = (props: TProps) => {
 					</div>
 				)}
 			</div>
-
-			<style>{`
-				@keyframes marquee {
-					0% {
-						transform: translateX(100%);
-					}
-					100% {
-						transform: translateX(-100%);
-					}
-				}
-				.animate-marquee {
-					animation: marquee 25s linear infinite;
-				}
-			`}</style>
 		</div>
 	)
 }
@@ -270,42 +263,4 @@ const getWeatherIcon = (shortForecast: string, isDaytime: boolean, size: "small"
 	} else {
 		return <Sun className={`${iconClass} text-yellow-400`} />
 	}
-}
-
-const WeatherAlertsBanner = ({ alerts }) => {
-	if (!alerts || alerts.length === 0) return null
-
-	// Filter for active/current alerts
-	const activeAlerts = alerts.filter((alert) => {
-		const expiresDate = new Date(alert.expires)
-		return expiresDate > new Date()
-	})
-
-	if (activeAlerts.length === 0) return null
-
-	// Create scrolling message from all active alerts
-	const scrollingMessage = activeAlerts
-		.map((alert) => {
-			const severityIcon = alert.severity === "Severe" ? "🚨" : alert.severity === "Moderate" ? "⚠️" : "ℹ️"
-			return `${severityIcon} ${alert.event.toUpperCase()}: ${alert.headline} ${severityIcon}`
-		})
-		.join(" • ")
-
-	return (
-		<div className="bg-red-600 border-y-4 border-yellow-400 py-3 overflow-hidden relative shadow-lg shadow-red-500/50">
-			<div className="absolute inset-0 bg-gradient-to-r from-red-600 via-red-700 to-red-600 animate-pulse opacity-50"></div>
-
-			<div className="relative flex items-center">
-				{/* Pulsing Alert Icon */}
-				<div className="absolute left-4 z-10 bg-yellow-400 rounded-full p-2 animate-bounce">
-					<span className="text-red-900 text-2xl font-bold">⚠</span>
-				</div>
-
-				{/* Scrolling Text */}
-				<div className="animate-marquee whitespace-nowrap text-yellow-300 text-xl font-bold tracking-wider pl-20">
-					{scrollingMessage}
-				</div>
-			</div>
-		</div>
-	)
 }

@@ -130,25 +130,6 @@ const reducer = (state: THomePageStateContext, value: TDistpatchAction): THomePa
 				activeSection: value.payload
 			}
 		}
-
-		case "setAudioPlayback": {
-			if (!state.mainBackgroundAudio) {
-				return state
-			}
-
-			if (value.payload) {
-				state.mainBackgroundAudio.play().catch((error) => {
-					console.error("Error playing background audio:", error)
-				})
-			} else {
-				state.mainBackgroundAudio.pause()
-			}
-
-			return {
-				...state,
-				audioPlaying: value.payload
-			}
-		}
 	}
 
 	throw new Error(`Invalid value "${value}" provided.`)
@@ -156,23 +137,6 @@ const reducer = (state: THomePageStateContext, value: TDistpatchAction): THomePa
 
 export function HomePageStateContextProvider(props: React.PropsWithChildren<unknown>) {
 	const [state, dispatch] = useReducer(reducer, DEFAULT_HOME_PAGE_STATE)
-
-	useEffect(() => {
-		state.audioPlaying = true
-		state.mainBackgroundAudio.loop = true
-		state.mainBackgroundAudio.volume = 0.1
-		state.mainBackgroundAudio.play().catch((error) => {
-			console.error("Error playing background audio:", error)
-		})
-
-		state.mainBackgroundAudio.onpause = () => {
-			dispatch({ action: "setAudioPlayback", payload: false })
-		}
-
-		state.mainBackgroundAudio.onplay = () => {
-			dispatch({ action: "setAudioPlayback", payload: true })
-		}
-	}, [])
 
 	useEffect(() => {
 		setInterval(() => {

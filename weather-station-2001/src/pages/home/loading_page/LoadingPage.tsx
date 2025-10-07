@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo } from "react"
 import LoadingBar from "../../../components/loading_bar/LoadingBar"
 import { useHomePageContext } from "../state/StateContext"
+import { useMusicManager } from "../../../hooks/music-manager/UseMusicManager"
 const audio = new Audio("/public/resources/audio/Sonar.mp3")
 
 type TLoadingPercent = number
@@ -11,6 +12,7 @@ type TProps = {
 
 function LoadingPage(props: TProps) {
 	const homePageContext = useHomePageContext()
+	const musicContext = useMusicManager()
 	const averageLoadingMs = useMemo(() => props.averageLoadingMs ?? 2000, [props.averageLoadingMs])
 	const [percentState, setPercentState] = React.useState<TLoadingPercent>(0)
 
@@ -42,20 +44,23 @@ function LoadingPage(props: TProps) {
 		return set
 	}, [percentState])
 
+	const hasPlayedSonar = React.useRef(false)
+
 	useEffect(() => {
-		if (homePageContext.audioPlaying) {
+		if (musicContext.playing && !hasPlayedSonar.current) {
+			hasPlayedSonar.current = true
 			audio.volume = 0.3
 			audio.playbackRate = 1.0
 			audio.loop = false
 			audio.currentTime = 0.9
 			audio.play()
 		}
-	}, [])
+	}, [musicContext])
 
 	return (
 		<div className="text-center mb-8 flex-1">
 			<button
-				className="absolute top-2 left-2 text-red-600 border-4 rounded-full border-red-500 hover:shadow-lg hover:shadow-red-500"
+				className="fixed bottom-2 left-2 text-red-600 border-4 rounded-full border-red-500 hover:shadow-lg hover:shadow-red-500"
 				onClick={() => {
 					homePageContext.dispatch({
 						action: "setSubmissionState",
