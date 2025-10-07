@@ -6,6 +6,7 @@ import {
 	DEFAULT_LOCATION_FORM_STATE,
 	type TDistpatchAction
 } from "./StateContext"
+import { DateTime } from "luxon"
 
 const reducer = (state: THomePageStateContext, value: TDistpatchAction): THomePageStateContext => {
 	switch (value.action) {
@@ -130,13 +131,12 @@ const reducer = (state: THomePageStateContext, value: TDistpatchAction): THomePa
 			}
 		}
 
-		case "toggleAudio": {
-			console.log("audio toggled!")
-			// if (!state.mainBackgroundAudio) {
-			// 	return state
-			// }
+		case "setAudioPlayback": {
+			if (!state.mainBackgroundAudio) {
+				return state
+			}
 
-			if (state.mainBackgroundAudio.paused) {
+			if (value.payload) {
 				state.mainBackgroundAudio.play().catch((error) => {
 					console.error("Error playing background audio:", error)
 				})
@@ -146,7 +146,7 @@ const reducer = (state: THomePageStateContext, value: TDistpatchAction): THomePa
 
 			return {
 				...state,
-				audioPlaying: !state.audioPlaying
+				audioPlaying: value.payload
 			}
 		}
 	}
@@ -164,7 +164,13 @@ export function HomePageStateContextProvider(props: React.PropsWithChildren<unkn
 		state.mainBackgroundAudio.play().catch((error) => {
 			console.error("Error playing background audio:", error)
 		})
-	}, [state, state.mainBackgroundAudio])
+	}, [])
+
+	useEffect(() => {
+		setInterval(() => {
+			dispatch({ action: "setCurrentTime", payload: DateTime.now() })
+		}, 1000)
+	}, [])
 
 	return <HomePageStateContext.Provider value={{ ...state, dispatch }}>{props.children}</HomePageStateContext.Provider>
 }

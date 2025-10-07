@@ -84,7 +84,8 @@ export type TDistpatchAction =
 			payload: AppState
 	  }
 	| {
-			action: "toggleAudio"
+			action: "setAudioPlayback"
+			payload: boolean
 	  }
 
 export const DEFAULT_HOME_PAGE_STATE: THomePageStateContext = {

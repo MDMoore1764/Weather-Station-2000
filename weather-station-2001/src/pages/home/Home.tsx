@@ -11,7 +11,6 @@ import { ValidationErrorModal } from "./address_form/ValidationErrorModal"
 import { useEffect } from "react"
 import type { TForecast } from "../../apis/weather_client/WeatherClient.types"
 import WeatherDisplay from "./weather_display_page/WeatherDisplay"
-import { DateTime } from "luxon"
 
 const homePageQueryClient = new QueryClient()
 
@@ -128,12 +127,6 @@ function HomePage() {
 			return
 		}
 	}, [forecastQuery.error, forecastQuery.isLoading, forecastQuery.data, homePageContext.dispatch])
-
-	useEffect(() => {
-		setInterval(() => {
-			homePageContext.dispatch({ action: "setCurrentTime", payload: DateTime.now() })
-		}, 1000)
-	})
 
 	return (
 		<div className="flex flex-col h-full w-full align-middle">

@@ -1,12 +1,8 @@
-import { useCallback } from "react"
 import { useHomePageContext } from "../state/StateContext"
 import { BoomBox, VolumeOff } from "lucide-react"
 
 function AppFooter() {
 	const homePageContext = useHomePageContext()
-	console.log(homePageContext)
-
-	const toggleAudio = useCallback(() => homePageContext.dispatch({ action: "toggleAudio" }), [homePageContext])
 
 	return (
 		<div>
@@ -17,7 +13,9 @@ function AppFooter() {
 			</div>
 			<div>
 				<button
-					onClick={toggleAudio}
+					onClick={() =>
+						homePageContext.dispatch({ action: "setAudioPlayback", payload: !homePageContext.audioPlaying })
+					}
 					className={`${
 						homePageContext.mainBackgroundAudio.paused ? "" : "animate-pulse"
 					} transition-transform duration-200  bg-black bg-opacity-50 border-2 border-purple-400 text-purple-300 p-3 rounded-full shadow-md hover:shadow-purple-500/50 hover:bg-purple-600 hover:text-white`}
