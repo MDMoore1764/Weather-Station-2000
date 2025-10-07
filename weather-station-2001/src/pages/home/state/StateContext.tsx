@@ -37,6 +37,10 @@ export type TDistpatchAction =
 			payload: string
 	  }
 	| {
+			action: "setCurrentTime"
+			payload: DateTime
+	  }
+	| {
 			action: "setOneLineAddress"
 			payload: string
 	  }

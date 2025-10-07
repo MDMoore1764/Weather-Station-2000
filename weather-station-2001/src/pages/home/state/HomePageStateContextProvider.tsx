@@ -117,7 +117,12 @@ const reducer = (state: THomePageStateContext, value: TDistpatchAction): THomePa
 				}
 			}
 		}
-
+		case "setCurrentTime": {
+			return {
+				...state,
+				currentTime: value.payload
+			}
+		}
 		case "activeSection": {
 			return {
 				...state,

@@ -28,8 +28,7 @@ const WeatherDisplay = (props: TProps) => {
 			{/* Weather Alerts Banner */}
 			<WeatherAlertsBanner alerts={props.forecast.alerts} />
 			<button
-				className="absolute top-2 left-2 text-red-600 border-4 rounded-full border-red-500 
-             hover:shadow-lg hover:shadow-red-500 
+				className="absolute top-2 left-2 text-red-600 border-4 rounded-full border-red-500 hover:shadow-lg hover:shadow-red-500 
              focus:outline-none focus:ring-0"
 				onClick={() => {
 					homePageContext.dispatch({

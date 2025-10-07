@@ -11,6 +11,7 @@ import { ValidationErrorModal } from "./address_form/ValidationErrorModal"
 import { useEffect } from "react"
 import type { TForecast } from "../../apis/weather_client/WeatherClient.types"
 import WeatherDisplay from "./weather_display_page/WeatherDisplay"
+import { DateTime } from "luxon"
 
 const homePageQueryClient = new QueryClient()
 
@@ -107,26 +108,6 @@ function HomePage() {
 		retry: false
 	})
 
-	// useEffect(() => {
-	// 	// If loading for the first time, set to loading weather state.
-	// 	if (forecastQuery.isLoading) {
-	// 		homePageContext.dispatch({ action: "setAppState", payload: "loading_weather" })
-	// 		return
-	// 	}
-
-	// 	if (forecastQuery.error) {
-	// 		homePageContext.dispatch({ action: "setAppState", payload: "error" })
-	// 		return
-	// 	}
-
-	// 	if (forecastQuery.data) {
-	// 		homePageContext.dispatch({ action: "setAppState", payload: "weather_display" })
-	// 		return
-	// 	}
-
-	// 	homePageContext.dispatch({ action: "setAppState", payload: "address_input" })
-	// }, [forecastQuery.isLoading, forecastQuery.error, forecastQuery.data, homePageContext])
-
 	useEffect(() => {
 		if (forecastQuery.isLoading) {
 			homePageContext.dispatch({ action: "setAppState", payload: "loading_weather" })
@@ -147,6 +128,12 @@ function HomePage() {
 			return
 		}
 	}, [forecastQuery.error, forecastQuery.isLoading, forecastQuery.data, homePageContext.dispatch])
+
+	useEffect(() => {
+		setInterval(() => {
+			homePageContext.dispatch({ action: "setCurrentTime", payload: DateTime.now() })
+		}, 1000)
+	})
 
 	return (
 		<div className="flex flex-col h-full w-full align-middle">
