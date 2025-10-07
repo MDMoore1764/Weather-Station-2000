@@ -9,6 +9,8 @@ import { handleErrorResponse } from "../../apis/weather_client/WeatherClient"
 import { USAAddressParser } from "../../utilities/USAAddressParser"
 import { ValidationErrorModal } from "./address_form/ValidationErrorModal"
 import { useEffect } from "react"
+import type { TForecast } from "../../apis/weather_client/WeatherClient.types"
+import WeatherDisplay from "./weather_display_page/WeatherDisplay"
 
 const homePageQueryClient = new QueryClient()
 
@@ -36,7 +38,7 @@ function HomePage() {
 				const response = await fetch(url)
 
 				if (response.ok) {
-					return await response.json()
+					return (await response.json()) as TForecast
 				}
 
 				await handleErrorResponse(response)
@@ -94,7 +96,7 @@ function HomePage() {
 			const response = await fetch(url)
 
 			if (response.ok) {
-				return await response.json()
+				return (await response.json()) as TForecast
 			}
 
 			await handleErrorResponse(response)
@@ -141,15 +143,34 @@ function HomePage() {
 		}
 
 		if (forecastQuery.data) {
-			console.log(forecastQuery.data)
+			homePageContext.dispatch({ action: "setAppState", payload: "weather_display" })
+			return
 		}
 	}, [forecastQuery.error, forecastQuery.isLoading, forecastQuery.data, homePageContext.dispatch])
 
 	return (
 		<div className="flex flex-col h-full w-full align-middle">
-			{homePageContext.appState === "address_input" && <AppTitle currentTime={homePageContext.currentTime} />}
+			{/* CRT Scanlines Effect */}
+			<div className="absolute inset-0 pointer-events-none z-50">
+				<div
+					className="h-full w-full opacity-20"
+					style={{
+						background: `repeating-linear-gradient(
+                 0deg,
+                 transparent,
+                 transparent 2px,
+                 rgba(0, 255, 0, 0.1) 2px,
+                 rgba(0, 255, 0, 0.1) 4px
+               )`
+					}}
+				/>
+			</div>
+			{(homePageContext.appState === "address_input" || homePageContext.appState === "weather_display") && (
+				<AppTitle currentTime={homePageContext.currentTime} />
+			)}
 			{homePageContext.appState === "address_input" && <AddressForm loading={forecastQuery.isLoading} />}
 			{homePageContext.appState === "loading_weather" && <LoadingPage />}
+			{homePageContext.appState === "weather_display" && <WeatherDisplay forecast={forecastQuery.data || null} />}
 			{homePageContext.validationError && (
 				<ValidationErrorModal
 					onClose={() => {

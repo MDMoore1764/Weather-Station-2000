@@ -50,6 +50,7 @@ function LoadingPage(props: TProps) {
 						action: "setSubmissionState",
 						payload: null
 					})
+
 					homePageContext.dispatch({
 						action: "setAppState",
 						payload: "address_input"
