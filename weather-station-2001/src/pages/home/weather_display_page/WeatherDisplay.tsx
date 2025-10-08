@@ -93,7 +93,9 @@ const WeatherDisplay = (props: TProps) => {
 				NEW SCAN
 			</button>
 
-			<div className="container mx-auto px-4 py-0 mt-35 relative z-10">
+			<div
+				className={`container mx-auto px-4 py-0 ${props.forecast.alerts.length > 0 ? "mt-35" : "mt-5"} relative z-10`}
+			>
 				{/* Current Weather - Hero Section */}
 				<div className="max-w-6xl mx-auto mb-8">
 					<div className="bg-gray-900 border-4 border-pink-500 rounded-lg p-5 shadow-2xl shadow-pink-500/50 relative">
@@ -262,7 +264,7 @@ const WeatherDisplay = (props: TProps) => {
 
 											<div className="flex flex-wrap gap-4 text-xs font-mono">
 												<div className="bg-black border border-yellow-400 px-2 py-1 rounded">
-													8<span className="text-yellow-400">SEVERITY:</span>{" "}
+													<span className="text-yellow-400">SEVERITY:</span>{" "}
 													<span className="text-white">{alert.severity}</span>
 												</div>
 												<div className="bg-black border border-yellow-400 px-2 py-1 rounded">

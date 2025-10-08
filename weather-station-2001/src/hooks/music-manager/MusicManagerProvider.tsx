@@ -30,7 +30,8 @@ export const MusicManagerProvider = (props: React.PropsWithChildren<unknown>) =>
 	}, [])
 
 	const changeSong = useCallback((songUrl: string) => {
-		if (audioRef.current?.src === songUrl) {
+		const fullSongURL = `${window.location.origin}${songUrl}`
+		if (audioRef.current?.src === fullSongURL) {
 			return
 		}
 
@@ -44,6 +45,7 @@ export const MusicManagerProvider = (props: React.PropsWithChildren<unknown>) =>
 
 		audioRef.current = new Audio(songUrl)
 		audioRef.current.volume = musicManagerState.volume
+		audioRef.current.loop = true
 		audioRef.current.play()
 
 		audioRef.current.onpause = () => {
