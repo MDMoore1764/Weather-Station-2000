@@ -97,7 +97,7 @@ const WeatherDisplay = (props: TProps) => {
 				NEW SCAN
 			</button>
 
-			<div className={`container mx-auto px-4 py-0 ${"mt-35"} relative z-10`}>
+			<div className={`container mx-auto px-4 py-0 ${activeAlerts.length > 0 ? "mt-35" : "mt-16"} relative z-10`}>
 				{/* Current Weather - Hero Section */}
 				<div className="max-w-6xl mx-auto mb-8">
 					<div className="bg-gray-900 border-4 border-pink-500 rounded-lg p-5 shadow-2xl shadow-pink-500/50 relative">
