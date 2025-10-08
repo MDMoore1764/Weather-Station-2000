@@ -55,35 +55,6 @@ function WeatherAlertsBanner(props: TProps) {
 			<div className="z-10 rounded-full p-2 neon m-auto w-48">
 				<span className="text-red-500 text-6xl font-bold text-shadow-md text-shadow-amber-600">ALERT</span>
 			</div>
-
-			<style jsx>{`
-				.neon {
-					font-size: 3rem;
-					font-family: "Arial Black", sans-serif;
-					font-weight: bold;
-					color: #fff;
-					opacity: 1;
-					animation: flicker 3s infinite alternate;
-				}
-
-				@keyframes flicker {
-					0%,
-					18%,
-					22%,
-					25%,
-					53%,
-					57%,
-					100% {
-						opacity: 1;
-					}
-
-					20%,
-					24%,
-					55% {
-						opacity: 0.6;
-					}
-				}
-			`}</style>
 		</div>
 	)
 }

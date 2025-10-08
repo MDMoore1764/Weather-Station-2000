@@ -27,7 +27,51 @@ const WeatherDisplay = (props: TProps) => {
 		<div>
 			{/* Weather Alerts Banner */}
 			{/* <WeatherAlertsBanner alerts={props.forecast.alerts} /> */}
+			<style jsx>{`
+				.neon {
+					animation: flicker 3s infinite alternate;
+				}
 
+				.gentle-neon {
+					animation: gentle-flicker 3s infinite alternate;
+				}
+
+				@keyframes flicker {
+					0%,
+					18%,
+					22%,
+					25%,
+					53%,
+					57%,
+					100% {
+						opacity: 1;
+					}
+
+					20%,
+					24%,
+					55% {
+						opacity: 0.6;
+					}
+				}
+
+				@keyframes gentle-flicker {
+					0%,
+					18%,
+					22%,
+					25%,
+					53%,
+					57%,
+					100% {
+						opacity: 1;
+					}
+
+					20%,
+					24%,
+					55% {
+						opacity: 0.9;
+					}
+				}
+			`}</style>
 			<div className="absolute top-0 left-0 right-0 ">
 				<WeatherAlertsBanner alerts={props.forecast.alerts} />
 			</div>
@@ -66,7 +110,7 @@ const WeatherDisplay = (props: TProps) => {
 						<div className="grid md:grid-cols-2 gap-8 items-center">
 							{/* Daytime Temperature & Icon */}
 							<div className="text-center">
-								<div className="flex justify-center mb-1">
+								<div className="flex justify-center mb-1 animate-pulse">
 									{getWeatherIcon(currentForecast.shortForecast, currentForecast.isDaytime, "large")}
 								</div>
 								<div className="text-8xl  md:text-8xl font-bold text-white mb-2">{currentForecast.temperature}°</div>
@@ -89,23 +133,38 @@ const WeatherDisplay = (props: TProps) => {
 
 							{/* Weather Details */}
 							<div className="grid grid-cols-2 gap-4">
-								<div className="bg-black border-2 border-blue-400 p-4 rounded">
+								<div className="bg-black border-2 border-blue-400 p-4 rounded hover:border-blue-600">
 									<Wind className="w-8 h-8 text-blue-400 mx-auto mb-2" />
-									<div className="text-blue-300 text-xs uppercase text-center">Wind</div>
+									<div
+										className="text-blue-300 text-xs uppercase text-center hover:text-blue-500"
+										// style={{ animationDelay: `${Math.random() * 2}s`, animationDuration: `${Math.random() * 5}s` }}
+									>
+										Wind
+									</div>
 									<div className="text-white text-xl font-bold text-center">{currentForecast.windSpeed}</div>
-									<div className="text-blue-300 text-sm text-center">{currentForecast.windDirection}</div>
+									<div className="text-blue-300 text-sm text-center ">{currentForecast.windDirection}</div>
 								</div>
 
-								<div className="bg-black border-2 border-cyan-400 p-4 rounded">
+								<div className="bg-black border-2 border-cyan-400 p-4 rounded hover:border-cyan-600">
 									<Droplets className="w-8 h-8 text-cyan-400 mx-auto mb-2" />
-									<div className="text-cyan-300 text-xs uppercase text-center">Precipitation</div>
+									<div
+										className="text-cyan-300 text-xs uppercase text-center hover:text-cyan-500"
+										// style={{ animationDelay: `${Math.random() * 2}s`, animationDuration: `${Math.random() * 5}s` }}
+									>
+										Precipitation
+									</div>
 									<div className="text-white text-xl font-bold text-center">
 										{currentForecast.probabilityOfPrecipitation.replace("wmoUnit:percent", "%")}
 									</div>
 								</div>
 
-								<div className="bg-black border-2 border-purple-400 p-4 rounded col-span-2">
-									<div className="text-purple-300 text-xs uppercase text-center mb-2">Temperature Trend</div>
+								<div className="bg-black border-2 border-purple-400 p-4 rounded col-span-2 hover:border-purple-600 gentle-neon">
+									<div
+										className="text-purple-300 text-xs uppercase text-center mb-2 hover:text-purple-500"
+										style={{ animationDelay: `${Math.random() * 2}s`, animationDuration: `${Math.random() * 5}s` }}
+									>
+										Temperature Trend
+									</div>
 									<div className="text-white text-lg font-bold text-center">
 										{currentForecast.temperatureTrend || "Steady"}
 									</div>
