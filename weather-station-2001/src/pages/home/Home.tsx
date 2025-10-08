@@ -11,6 +11,7 @@ import { useEffect } from "react"
 import WeatherDisplay from "./weather_display_page/WeatherDisplay"
 import { MusicManagerProvider } from "../../hooks/music-manager/MusicManagerProvider"
 import { useMusicManager } from "../../hooks/music-manager/UseMusicManager"
+import { BoomBox, VolumeOff } from "lucide-react"
 
 const homePageQueryClient = new QueryClient()
 
@@ -91,6 +92,16 @@ function HomePage() {
 				/>
 			)}
 			<AppFooter />
+			<div className="fixed right-4 bottom-4 z-50">
+				<button
+					onClick={() => (musicManager.playing ? musicManager.pause() : musicManager.play())}
+					className={`${
+						!musicManager.playing ? "" : "animate-pulse"
+					} transition-transform duration-200  bg-black bg-opacity-50 border-2 border-purple-400 text-purple-300 p-3 rounded-full shadow-md hover:shadow-purple-500/50 hover:bg-purple-600 hover:text-white`}
+				>
+					{musicManager.playing ? <BoomBox /> : <VolumeOff />}
+				</button>
+			</div>
 		</div>
 	)
 }

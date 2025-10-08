@@ -11,7 +11,7 @@ function WeatherAlertsBanner(props: TProps) {
 
 	useEffect(() => {
 		if (activeAlerts.length > 0) {
-			musicManager.changeSong("/public/resources/audio/ActiveAlert.mp3")
+			musicManager.changeSong("/resources/audio/ActiveAlert.mp3")
 		}
 	}, [activeAlerts.length])
 
