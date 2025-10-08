@@ -52,8 +52,8 @@ function WeatherAlertsBanner(props: TProps) {
 				`}</style>
 			</div>
 
-			<div className="z-10 rounded-full p-2 neon">
-				<span className="text-red-500 text-5xl font-bold">ALERT</span>
+			<div className="z-10 rounded-full p-2 neon m-auto w-48">
+				<span className="text-red-500 text-6xl font-bold text-shadow-md text-shadow-amber-600">ALERT</span>
 			</div>
 
 			<style jsx>{`
