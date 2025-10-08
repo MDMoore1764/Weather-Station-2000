@@ -1,7 +1,9 @@
 import type { TForecast } from "../../../apis/weather_client/WeatherClient.types"
 import { Cloud, CloudDrizzle, CloudRain, Droplets, Moon, Snowflake, Sun, TriangleAlert, Wind, Zap } from "lucide-react"
 import { useHomePageContext } from "../state/StateContext"
-import WeatherAlertsBanner from "./weather_alerts_banner/WeatherAlertsBanner"
+import WeatherAlertsBanner from "./weather_banners/WeatherAlertsBanner"
+import { DateTime } from "luxon"
+import WeatherAllGoodBanner from "./weather_banners/WeatherAllGoodBanner"
 
 type TProps = {
 	forecast: TForecast | null
@@ -22,6 +24,7 @@ const WeatherDisplay = (props: TProps) => {
 	const currentForecast = props.forecast.forecasts[0]
 	const upcomingForecasts = props.forecast.forecasts.filter((u) => u.isDaytime).slice(1, 7)
 	const currentDateTime = formatDateTime(currentForecast.startTime)
+	const activeAlerts = props.forecast.alerts.filter((a) => DateTime.fromISO(a.expires) > DateTime.now())
 
 	return (
 		<div>
@@ -73,7 +76,8 @@ const WeatherDisplay = (props: TProps) => {
 				}
 			`}</style>
 			<div className="absolute top-0 left-0 right-0 ">
-				<WeatherAlertsBanner alerts={props.forecast.alerts} />
+				<WeatherAlertsBanner activeAlerts={activeAlerts} />
+				<WeatherAllGoodBanner activeAlerts={activeAlerts} />
 			</div>
 			<button
 				className="fixed bottom-2 left-2 text-red-600 border-4 rounded-full border-red-500 hover:shadow-lg hover:shadow-red-500 
@@ -93,9 +97,7 @@ const WeatherDisplay = (props: TProps) => {
 				NEW SCAN
 			</button>
 
-			<div
-				className={`container mx-auto px-4 py-0 ${props.forecast.alerts.length > 0 ? "mt-35" : "mt-5"} relative z-10`}
-			>
+			<div className={`container mx-auto px-4 py-0 ${"mt-35"} relative z-10`}>
 				{/* Current Weather - Hero Section */}
 				<div className="max-w-6xl mx-auto mb-8">
 					<div className="bg-gray-900 border-4 border-pink-500 rounded-lg p-5 shadow-2xl shadow-pink-500/50 relative">
@@ -235,7 +237,7 @@ const WeatherDisplay = (props: TProps) => {
 				{props.forecast.alerts && props.forecast.alerts.length > 0 && (
 					<div className="max-w-6xl mx-auto mt-8">
 						<h3 className="text-3xl font-bold text-red-400 mb-4 uppercase tracking-wider text-center animate-pulse">
-							⚠️ Active Weather Alerts ⚠️
+							⚠️ Weather Alerts ⚠️
 						</h3>
 
 						<div className="space-y-4">

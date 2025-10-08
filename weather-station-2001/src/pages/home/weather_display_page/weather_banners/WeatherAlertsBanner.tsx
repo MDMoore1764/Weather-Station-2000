@@ -3,21 +3,20 @@ import type { TAlert } from "../../../../apis/weather_client/WeatherClient.types
 import { DateTime } from "luxon"
 import { useMusicManager } from "../../../../hooks/music-manager/UseMusicManager"
 
-type TProps = { alerts: TAlert[] }
+type TProps = { activeAlerts: TAlert[] }
 
 function WeatherAlertsBanner(props: TProps) {
 	const musicManager = useMusicManager()
-	const activeAlerts = props.alerts.filter((a) => DateTime.fromISO(a.expires) > DateTime.now())
 
 	useEffect(() => {
-		if (activeAlerts.length > 0) {
+		if (props.activeAlerts.length > 0) {
 			musicManager.changeSong("/resources/audio/ActiveAlert.mp3")
 		}
-	}, [activeAlerts.length])
+	}, [props.activeAlerts.length])
 
-	if (activeAlerts.length === 0) return null
+	if (props.activeAlerts.length === 0) return null
 
-	const combinedMessage = activeAlerts
+	const combinedMessage = props.activeAlerts
 		.map((alert) => {
 			const icon = getAlertIcon(alert.severity)
 
@@ -71,43 +70,3 @@ function getAlertIcon(severity: string) {
 			return "ℹ️"
 	}
 }
-
-// const WeatherAlertsBanner = (props: { alerts: TAlert[] }) => {
-// 	const alerts = props.alerts
-// 	if (!alerts || alerts.length === 0) return null
-
-// 	// Filter for active/current alerts
-// 	const activeAlerts = alerts
-// 	// .filter((alert) => {
-// 	// 	const expiresDate = new Date(alert.expires)
-// 	// 	return expiresDate > new Date()
-// 	// })
-
-// 	if (activeAlerts.length === 0) return null
-
-// 	// Create scrolling message from all active alerts
-// 	const scrollingMessage = activeAlerts
-// 		.map((alert) => {
-// 			const severityIcon = alert.severity === "Severe" ? "🚨" : alert.severity === "Moderate" ? "⚠️" : "ℹ️"
-// 			return `${severityIcon} ${alert.event.toUpperCase()}: ${alert.headline} ${severityIcon}`
-// 		})
-// 		.join(" • ")
-
-// 	return (
-// 		<div className="bg-red-600 border-y-4 border-yellow-400 py-3 overflow-hidden relative shadow-lg shadow-red-500/50">
-// 			<div className="absolute inset-0 bg-gradient-to-r from-red-600 via-red-700 to-red-600 animate-pulse opacity-50"></div>
-
-// 			<div className="relative flex items-center">
-// 				{/* Pulsing Alert Icon */}
-// 				<div className="absolute left-4 z-10 bg-yellow-400 rounded-full p-2 animate-bounce">
-// 					<span className="text-red-900 text-2xl font-bold">⚠</span>
-// 				</div>
-
-// 				{/* Scrolling Text */}
-// 				<div className="animate-marquee whitespace-nowrap text-yellow-300 text-xl font-bold tracking-wider pl-20">
-// 					{scrollingMessage}
-// 				</div>
-// 			</div>
-// 		</div>
-// 	)
-// }
