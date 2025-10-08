@@ -13,7 +13,7 @@ function AddressForm(props: TProps) {
 	const musicManager = useMusicManager()
 
 	useEffect(() => {
-		musicManager.changeSong("/public/resources/audio/BachgroundMuseik.mp3")
+		musicManager.changeSong("/resources/audio/BachgroundMuseik.mp3")
 	}, [])
 
 	const handleSubmit = useCallback(
@@ -102,7 +102,7 @@ function AddressForm(props: TProps) {
 							type="text"
 							value={homePageStateContext.formState.oneLineAddress ?? ""}
 							onInput={setOneLineAddress}
-							placeholder="Enter Your Address • Test Your Luck • Are you up for the challenge?"
+							placeholder="Enter Your Address • Up for the Challenge? • It Doesn't Work"
 							className="w-full px-3 py-2 bg-black border-2 border-green-400 text-green-300 font-mono focus:outline-none focus:border-purple-400 focus:shadow-lg focus:shadow-cyan-400/50"
 							onKeyDown={handleSubmitOnEnterKeydownEvent}
 							onFocus={() => setActiveSection("onelineaddress")}
