@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import type { TAlert } from "../../../../apis/weather_client/WeatherClient.types"
-import { useMusicManager } from "../../../../hooks/music-manager/UseMusicManager"
+import { useMusicManager } from "../../../../hooks/music-manager/useMusicManager"
 
 type TProps = { activeAlerts: TAlert[] }
 
@@ -9,7 +9,7 @@ function WeatherAlertsBanner(props: TProps) {
 
 	useEffect(() => {
 		if (props.activeAlerts.length > 0) {
-			musicManager.changeSong("/resources/audio/ActiveAlert.mp3")
+			musicManager.changeSong(`${import.meta.env.BASE_URL}/resources/audio/ActiveAlert.mp3`)
 		}
 	}, [props.activeAlerts.length])
 

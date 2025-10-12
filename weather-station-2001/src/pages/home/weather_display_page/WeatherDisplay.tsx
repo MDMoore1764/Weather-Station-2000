@@ -237,7 +237,7 @@ const WeatherDisplay = (props: TProps) => {
 				{props.forecast.alerts && props.forecast.alerts.length > 0 && (
 					<div className="max-w-6xl mx-auto mt-8">
 						<h3 className="text-3xl font-bold text-red-400 mb-4 uppercase tracking-wider text-center animate-pulse">
-							⚠️ Weather Alerts ⚠️
+							⚠️ Recent Weather Alerts ⚠️
 						</h3>
 
 						<div className="space-y-4">

@@ -13,7 +13,7 @@ function AddressForm(props: TProps) {
 	const musicManager = useMusicManager()
 
 	useEffect(() => {
-		musicManager.changeSong("/resources/audio/BachgroundMuseik.mp3")
+		musicManager.changeSong(`${import.meta.env.BASE_URL}/resources/audio/BachgroundMuseik.mp3`)
 	}, [])
 
 	const handleSubmit = useCallback(
