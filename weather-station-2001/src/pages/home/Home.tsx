@@ -10,7 +10,7 @@ import { ValidationErrorModal } from "./address_form/ValidationErrorModal"
 import { useEffect } from "react"
 import WeatherDisplay from "./weather_display_page/WeatherDisplay"
 import { MusicManagerProvider } from "../../hooks/music-manager/MusicManagerProvider"
-import { useMusicManager } from "../../hooks/music-manager/UseMusicManager"
+import { useMusicManager } from "../../hooks/music-manager/useMusicManager"
 import { BoomBox, VolumeOff } from "lucide-react"
 
 const homePageQueryClient = new QueryClient()
