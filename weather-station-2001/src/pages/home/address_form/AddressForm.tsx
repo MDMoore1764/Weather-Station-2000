@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from "react"
 import { useHomePageContext, type TSection } from "../state/StateContext"
 import { weatherFormValidationPath, weatherFormValidationSchema } from "./AddressForm.validation"
 import type { ValidationError } from "yup"
-import { useMusicManager } from "../../../hooks/music-manager/UseMusicManager"
+import { useMusicManager } from "../../../hooks/music-manager/useMusicManager"
 
 type TProps = {
 	loading: boolean
@@ -148,7 +148,9 @@ function AddressForm(props: TProps) {
 								name="address-line1"
 								autoComplete="address-line1"
 								value={homePageStateContext.formState.address?.streetName ?? ""}
-								onInput={(e) => homePageStateContext.dispatch({ action: "updateStreetName", payload: e.target.value })}
+								onInput={(e) =>
+									homePageStateContext.dispatch({ action: "updateStreetName", payload: e.currentTarget.value })
+								}
 								placeholder="Main Street"
 								className="w-full px-2 py-2 bg-black border-2 border-pink-400 text-pink-300 font-mono text-sm focus:outline-none focus:border-green-400 focus:shadow-lg focus:shadow-pink-400/50"
 								onKeyDown={handleMoveNextKeydownEvent}
@@ -164,7 +166,7 @@ function AddressForm(props: TProps) {
 								name="address-level2"
 								autoComplete="address-level2"
 								value={homePageStateContext.formState.address?.city ?? ""}
-								onInput={(e) => homePageStateContext.dispatch({ action: "updateCity", payload: e.target.value })}
+								onInput={(e) => homePageStateContext.dispatch({ action: "updateCity", payload: e.currentTarget.value })}
 								placeholder="San Francisco"
 								className="w-full px-2 py-2 bg-black border-2 border-purple-400 text-purple-300 font-mono text-sm focus:outline-none focus:border-cyan-400 focus:shadow-lg focus:shadow-purple-400/50"
 								onKeyDown={handleMoveNextKeydownEvent}
@@ -180,7 +182,9 @@ function AddressForm(props: TProps) {
 								name="address-level1"
 								autoComplete="address-level1"
 								value={homePageStateContext.formState.address?.state ?? ""}
-								onInput={(e) => homePageStateContext.dispatch({ action: "updateState", payload: e.target.value })}
+								onInput={(e) =>
+									homePageStateContext.dispatch({ action: "updateState", payload: e.currentTarget.value })
+								}
 								placeholder="CA"
 								className="w-full px-2 py-2 bg-black border-2 border-purple-400 text-purple-300 font-mono text-sm focus:outline-none focus:border-cyan-400 focus:shadow-lg focus:shadow-purple-400/50"
 								onKeyDown={handleMoveNextKeydownEvent}
@@ -196,7 +200,9 @@ function AddressForm(props: TProps) {
 								name="postal-code"
 								autoComplete="postal-code"
 								value={homePageStateContext.formState.address?.postalCode ?? ""}
-								onInput={(e) => homePageStateContext.dispatch({ action: "updatePostalCode", payload: e.target.value })}
+								onInput={(e) =>
+									homePageStateContext.dispatch({ action: "updatePostalCode", payload: e.currentTarget.value })
+								}
 								placeholder="94102"
 								className="w-full px-2 py-2 bg-black border-2 border-cyan-400 text-cyan-300 font-mono text-sm focus:outline-none focus:border-green-400 focus:shadow-lg focus:shadow-cyan-400/50"
 								onKeyDown={handleMoveNextKeydownEvent}

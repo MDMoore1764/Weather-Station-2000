@@ -294,12 +294,14 @@ export default WeatherDisplay
 
 const formatDateTime = (isoString: string) => {
 	const date = new Date(isoString)
-	const timeOptions = { hour: "numeric", minute: "2-digit", hour12: true }
-	const dateOptions = { weekday: "short", month: "short", day: "numeric" }
 
 	return {
-		time: date.toLocaleTimeString("en-US", timeOptions),
-		date: date.toLocaleDateString("en-US", dateOptions)
+		time: date.toLocaleTimeString("en-US", {
+			hour: "numeric",
+			minute: "2-digit",
+			hour12: true
+		}),
+		date: date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })
 	}
 }
 

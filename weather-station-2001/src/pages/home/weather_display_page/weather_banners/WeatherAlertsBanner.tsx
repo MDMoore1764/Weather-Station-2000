@@ -1,6 +1,5 @@
 import { useEffect } from "react"
 import type { TAlert } from "../../../../apis/weather_client/WeatherClient.types"
-import { DateTime } from "luxon"
 import { useMusicManager } from "../../../../hooks/music-manager/UseMusicManager"
 
 type TProps = { activeAlerts: TAlert[] }
