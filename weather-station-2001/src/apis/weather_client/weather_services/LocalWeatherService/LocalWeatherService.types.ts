@@ -20,6 +20,15 @@ export type TUSCensusGeocodeAddress = {
 	coordinates: TCoordinates
 }
 
+export type TNWSLocationResponse = {
+	properties: TNWSFeature
+}
+
+export type TNWSFeature = {
+	forecast: string
+	cwa: string
+}
+
 export type TNWSForecastResponse = {
 	geometry: TNWSForecastGeometry
 	properties: TNWSForecastProperties
@@ -27,7 +36,7 @@ export type TNWSForecastResponse = {
 
 export type TNWSForecastGeometry = {
 	type: string
-	coordinates: number[][][]
+	coordinates: number[]
 }
 
 export type TNWSForecastProperties = {
@@ -100,4 +109,8 @@ export type TNWSAlertProperties = {
 	code?: string
 	language?: string
 	web?: string
+}
+
+export type TGeocoderErrorResponse = {
+	errors: string[]
 }

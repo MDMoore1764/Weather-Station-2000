@@ -1,10 +1,12 @@
 import type { TAddress, TForecast, TCoordinates, TForecastElement } from "../../WeatherClient.types"
 import type { IWeatherService } from "../WeatherServices.types"
 import { AddressValidator } from "./AddressValidator"
+import { CORSProxyService } from "./CORSProxyService"
 import type {
 	TBenchmarkResult,
 	TNWSAlertResponse,
 	TNWSForecastResponse,
+	TNWSLocationResponse,
 	TUSCensusGeocodeResponse
 } from "./LocalWeatherService.types"
 import { mapAlertsResponse } from "./LocalWeatherService.utilities"
@@ -29,16 +31,15 @@ export class LocalWeatherService implements IWeatherService {
 	}
 
 	async fetchForecastByCoordinate(coordinates: TCoordinates): Promise<TForecast | null> {
-		const forecastURI = new URL(
-			`${this.POINTS_ENDPOINT}${coordinates.y},${coordinates.x}`,
-			import.meta.env.VITE_NWS_BASEURI
-		)
-		const alertsURI = new URL(
-			`${this.ALERTS_ENDPOINT}?point=${coordinates.y},${coordinates.x}`,
-			import.meta.env.VITE_NWS_BASEURI
-		)
+		const forecastLocationURI = new CORSProxyService(
+			new URL(`${this.POINTS_ENDPOINT}${coordinates.y},${coordinates.x}`, import.meta.env.VITE_NWS_BASEURI)
+		).proxiedURL
 
-		const forecastRequest = fetch(forecastURI, {
+		const alertsURI = new CORSProxyService(
+			new URL(`${this.ALERTS_ENDPOINT}?point=${coordinates.y},${coordinates.x}`, import.meta.env.VITE_NWS_BASEURI)
+		).proxiedURL
+
+		const forecastLocationRequest = fetch(forecastLocationURI, {
 			headers: {
 				Accept: import.meta.env.VITE_NWS_ACCEPT,
 				UserAgent: import.meta.env.VITE_NWS_USERAGENT
@@ -52,9 +53,24 @@ export class LocalWeatherService implements IWeatherService {
 			}
 		})
 
-		const forecastResponse = await forecastRequest
+		const forecastLocationResponse = await forecastLocationRequest
+		if (!forecastLocationResponse.ok) {
+			return await handleErrorResponse(forecastLocationResponse)
+		}
+
+		const forecastLocation = (await forecastLocationResponse.json()) as TNWSLocationResponse
+
+		const forecastUri = new CORSProxyService(new URL(forecastLocation.properties.forecast)).proxiedURL
+
+		const forecastResponse = await fetch(forecastUri, {
+			headers: {
+				Accept: import.meta.env.VITE_NWS_ACCEPT,
+				UserAgent: import.meta.env.VITE_NWS_USERAGENT
+			}
+		})
+
 		if (!forecastResponse.ok) {
-			return await handleErrorResponse(forecastResponse)
+			return await handleErrorResponse(forecastLocationResponse)
 		}
 
 		const forecast = (await forecastResponse.json()) as TNWSForecastResponse
@@ -67,9 +83,7 @@ export class LocalWeatherService implements IWeatherService {
 
 		return {
 			alerts: mapAlertsResponse(alerts),
-			affectedLocations: forecast.geometry.coordinates.map((coordinateSets) =>
-				coordinateSets.map((coordinates) => ({ x: coordinates[0], y: coordinates[1] }))
-			),
+			affectedLocations: [[{ x: forecast.geometry.coordinates[0], y: forecast.geometry.coordinates[1] }]],
 			generatedAt: forecast.properties.generatedAt,
 			lastUpdated: forecast.properties.updateTime,
 			forecasts: forecast.properties.periods.map(
@@ -110,7 +124,8 @@ export class LocalWeatherService implements IWeatherService {
 	}
 
 	async #getGeocoderLatestBenchmark() {
-		const url = new URL(this.BENCHMARKS_ENDPOINT, import.meta.env.VITE_GEOCODING_BASEURI)
+		const baseUrl = new URL(this.BENCHMARKS_ENDPOINT, import.meta.env.VITE_GEOCODING_BASEURI)
+		const url = new CORSProxyService(baseUrl).proxiedURL
 
 		const bmr = await fetch(url, {
 			headers: {
@@ -142,7 +157,7 @@ export class LocalWeatherService implements IWeatherService {
 		}
 
 		if (address.streetName) {
-			pathParts.push(`streetName=${encodeURIComponent(address.streetName)}`)
+			pathParts.push(`street=${encodeURIComponent(address.streetName)}`)
 		}
 
 		if (address.state) {
@@ -154,28 +169,43 @@ export class LocalWeatherService implements IWeatherService {
 		}
 
 		if (address.postalCode) {
-			pathParts.push(`postalCode=${encodeURIComponent(address.postalCode)}`)
+			pathParts.push(`zip=${encodeURIComponent(address.postalCode)}`)
 		}
 
 		const path = `${this.ADDRESS_ENDPOINT}?format=${
 			import.meta.env.VITE_GEOCODING_FORMAT
 		}&benchmark=${benchmark}&${pathParts.join("&")}`
 
-		const url = new URL(path, import.meta.env.VITE_GEOCODING_BASEURI)
+		const url = new CORSProxyService(new URL(path, import.meta.env.VITE_GEOCODING_BASEURI)).proxiedURL
 		return url
 	}
 }
 
 export async function handleErrorResponse(response: Response): Promise<never> {
-	let problemDetails: TProblemDetails | null = null
+	let problemDetails: unknown | null = null
 	try {
 		problemDetails = (await response.json()) as TProblemDetails
 	} catch {
 		//Empty
 	}
 
-	if (problemDetails != null) {
+	if (
+		problemDetails != null &&
+		typeof problemDetails == "object" &&
+		problemDetails != null &&
+		"title" in problemDetails &&
+		"detail" in problemDetails
+	) {
 		throw new Error(`${problemDetails.title}(CODE ${response.status}): ${problemDetails.detail}`)
+	}
+
+	if (
+		problemDetails != null &&
+		typeof problemDetails == "object" &&
+		"errors" in problemDetails &&
+		Array.isArray(problemDetails.errors)
+	) {
+		throw new Error(`ERROR (CODE ${response.status}): ${problemDetails.errors.join(", ")}`)
 	}
 
 	throw new Error(`System Malfunction ${response.status}: ${response.statusText}`)
