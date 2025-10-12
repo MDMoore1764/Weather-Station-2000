@@ -1,9 +1,17 @@
 export type TForecast = {
 	generatedAt: string
 	lastUpdated: string
-	affectedLocations: Array<AffectedLocation[]>
+	affectedLocations: TCoordinates[][]
 	forecasts: TForecastElement[]
 	alerts: TAlert[]
+}
+
+export type TAddress = {
+	streetNumber: string | null
+	streetName: string | null
+	city: string | null
+	state: string | null
+	postalCode: string | null
 }
 
 export type TCoordinates = {

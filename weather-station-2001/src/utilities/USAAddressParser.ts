@@ -9,7 +9,7 @@ export class USAAddressParser {
 		streetName?: string
 		city?: string
 		state?: string
-		zipCode?: string
+		postalCode?: string
 	} = {}
 
 	// Comprehensive state mappings
@@ -255,9 +255,9 @@ export class USAAddressParser {
 			const match = input.match(pattern)
 			if (match) {
 				if (match[2]) {
-					this.parsed.zipCode = `${match[1]}-${match[2]}`
+					this.parsed.postalCode = `${match[1]}-${match[2]}`
 				} else {
-					this.parsed.zipCode = match[1]
+					this.parsed.postalCode = match[1]
 				}
 				// Remove ZIP from working string
 				return input.replace(pattern, "").trim()
@@ -505,7 +505,7 @@ export class USAAddressParser {
 	}
 
 	get zipCode(): string | undefined {
-		return this.parsed.zipCode
+		return this.parsed.postalCode
 	}
 
 	// Utility getter for full parsed object
@@ -527,12 +527,12 @@ export class USAAddressParser {
 			parts.push(this.parsed.city)
 		}
 
-		if (this.parsed.state && this.parsed.zipCode) {
-			parts.push(`${this.parsed.state} ${this.parsed.zipCode}`)
+		if (this.parsed.state && this.parsed.postalCode) {
+			parts.push(`${this.parsed.state} ${this.parsed.postalCode}`)
 		} else if (this.parsed.state) {
 			parts.push(this.parsed.state)
-		} else if (this.parsed.zipCode) {
-			parts.push(this.parsed.zipCode)
+		} else if (this.parsed.postalCode) {
+			parts.push(this.parsed.postalCode)
 		}
 
 		return parts.join(", ")
