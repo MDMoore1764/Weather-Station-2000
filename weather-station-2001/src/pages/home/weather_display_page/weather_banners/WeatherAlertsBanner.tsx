@@ -9,7 +9,21 @@ function WeatherAlertsBanner(props: TProps) {
 
 	useEffect(() => {
 		if (props.activeAlerts.length > 0) {
-			musicManager.changeSong(`${import.meta.env.BASE_URL}/resources/audio/ActiveAlert.mp3`)
+			musicManager.pause()
+			const bulletinAudio = new Audio(`resources/audio/News Bulletin.m4a`)
+			bulletinAudio.volume = musicManager.volume
+			bulletinAudio.playbackRate = 1.0
+			bulletinAudio.loop = false
+			bulletinAudio.currentTime = 0.0
+			bulletinAudio.play()
+
+			//when 70% complete, play alert music
+			bulletinAudio.ontimeupdate = () => {
+				if (bulletinAudio.currentTime >= bulletinAudio.duration * 0.45) {
+					bulletinAudio.ontimeupdate = null
+					musicManager.changeSong(`resources/audio/ActiveAlert.mp3`, true)
+				}
+			}
 		}
 	}, [props.activeAlerts.length])
 

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo } from "react"
 import LoadingBar from "../../../components/loading_bar/LoadingBar"
 import { useHomePageContext } from "../state/StateContext"
 import { useMusicManager } from "../../../hooks/music-manager/useMusicManager"
-const audio = new Audio(`${import.meta.env.BASE_URL}/resources/audio/Sonar.mp3`)
+const audio = new Audio(`resources/audio/Sonar.mp3`)
 
 type TLoadingPercent = number
 

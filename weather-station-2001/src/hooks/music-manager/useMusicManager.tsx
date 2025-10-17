@@ -1,6 +1,13 @@
 import React from "react"
 
+export type TChangeSong = {
+	(songUrl: string, loop: true): Promise<void>
+	(songUrl: string, loop: false): Promise<never>
+	(songUrl: string, loop: boolean): Promise<void | never>
+}
+
 export type TMusicManagerContext = {
+	changeSong: TChangeSong
 	activeSong: string | null
 	playing: boolean
 	volume: number // 0 to 1
@@ -8,7 +15,6 @@ export type TMusicManagerContext = {
 	duration: number // in seconds
 	play: () => void
 	pause: () => void
-	changeSong: (songUrl: string) => void
 }
 
 export type TMusicManagerProviderState = {

@@ -25,6 +25,7 @@ const WeatherDisplay = (props: TProps) => {
 	const upcomingForecasts = props.forecast.forecasts.filter((u) => u.isDaytime).slice(1, 7)
 	const currentDateTime = formatDateTime(currentForecast.startTime)
 	const activeAlerts = props.forecast.alerts.filter((a) => DateTime.fromISO(a.expires) > DateTime.now())
+	const inactiveAlerts = props.forecast.alerts.filter((a) => DateTime.fromISO(a.expires) <= DateTime.now())
 
 	return (
 		<div>
@@ -234,14 +235,14 @@ const WeatherDisplay = (props: TProps) => {
 				</div>
 
 				{/* Active Alerts Section */}
-				{props.forecast.alerts && props.forecast.alerts.length > 0 && (
+				{inactiveAlerts && inactiveAlerts.length > 0 && (
 					<div className="max-w-6xl mx-auto mt-8">
 						<h3 className="text-3xl font-bold text-red-400 mb-4 uppercase tracking-wider text-center animate-pulse">
 							⚠️ Recent Weather Alerts (Expired) ⚠️
 						</h3>
 
 						<div className="space-y-4">
-							{props.forecast.alerts.slice(0, 3).map((alert, index) => (
+							{inactiveAlerts.map((alert, index) => (
 								<div
 									key={index}
 									className="bg-red-900 border-4 border-yellow-400 rounded-lg p-6 shadow-2xl shadow-red-500/50"
