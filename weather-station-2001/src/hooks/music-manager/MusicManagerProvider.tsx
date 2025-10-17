@@ -31,7 +31,7 @@ export const MusicManagerProvider = (props: React.PropsWithChildren<unknown>) =>
 
 	const changeSong = useCallback(
 		(songUrl: string, loop: boolean) => {
-			songUrl = import.meta.env.PROD ? `${import.meta.env.BASE_URL}${songUrl}` : `/public/${songUrl}`
+			songUrl = import.meta.env.PROD ? `${import.meta.env.BASE_URL}/${songUrl}` : `/public/${songUrl}`
 			const fullSongURL = `${window.location.origin}${songUrl}`
 			if (audioRef.current?.src === fullSongURL) {
 				return Promise.resolve()
