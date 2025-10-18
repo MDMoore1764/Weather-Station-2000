@@ -12,6 +12,8 @@ import WeatherDisplay from "./weather_display_page/WeatherDisplay"
 import { MusicManagerProvider } from "../../hooks/music-manager/MusicManagerProvider"
 import { useMusicManager } from "../../hooks/music-manager/useMusicManager"
 import { BoomBox, VolumeOff } from "lucide-react"
+import { ThemeProvider } from "../../themes/ThemeContext"
+import { ThemeSelector } from "../../components/ThemeSelector"
 
 const homePageQueryClient = new QueryClient()
 
@@ -59,6 +61,7 @@ function HomePage() {
 					}}
 				/>
 			</div>
+			<ThemeSelector />
 			{homePageContext.appState === "address_input" && <AppTitle currentTime={homePageContext.currentTime} />}
 			{homePageContext.appState === "address_input" && <AddressForm loading={forecastQuery.isLoading} />}
 			{homePageContext.appState === "loading_weather" && <LoadingPage />}
@@ -97,9 +100,10 @@ function HomePage() {
 					onClick={() => (musicManager.playing ? musicManager.pause() : musicManager.play())}
 					className={`${
 						!musicManager.playing ? "" : "animate-pulse"
-					} transition-transform duration-200  bg-black bg-opacity-50 border-2 border-purple-400 text-purple-300 p-3 rounded-full shadow-md hover:shadow-purple-500/50 hover:bg-purple-600 hover:text-white`}
+					} transition-transform duration-200  bg-black bg-opacity-50 border-2 border-purple-400 text-purple-300 p-2 sm:p-3 rounded-full shadow-md hover:shadow-purple-500/50 hover:bg-purple-600 hover:text-white`}
 				>
-					{musicManager.playing ? <BoomBox /> : <VolumeOff />}
+					<BoomBox className="w-5 h-5 sm:w-6 sm:h-6" />
+					{musicManager.playing ? <span className="sr-only">Pause</span> : <span className="sr-only">Play</span>}
 				</button>
 			</div>
 		</div>
@@ -107,11 +111,13 @@ function HomePage() {
 }
 
 export const Home = () => (
-	<QueryClientProvider client={homePageQueryClient}>
-		<MusicManagerProvider>
-			<HomePageStateContextProvider>
-				<HomePage />
-			</HomePageStateContextProvider>
-		</MusicManagerProvider>
-	</QueryClientProvider>
+	<ThemeProvider>
+		<QueryClientProvider client={homePageQueryClient}>
+			<MusicManagerProvider>
+				<HomePageStateContextProvider>
+					<HomePage />
+				</HomePageStateContextProvider>
+			</MusicManagerProvider>
+		</QueryClientProvider>
+	</ThemeProvider>
 )

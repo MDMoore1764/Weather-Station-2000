@@ -3,6 +3,9 @@ import { useHomePageContext, type TSection } from "../state/StateContext"
 import { weatherFormValidationPath, weatherFormValidationSchema } from "./AddressForm.validation"
 import type { ValidationError } from "yup"
 import { useMusicManager } from "../../../hooks/music-manager/useMusicManager"
+import { useTheme } from "../../../themes/ThemeContext"
+import { Button } from "../../../components/styled/Button"
+import { Input } from "../../../components/styled/Input"
 
 type TProps = {
 	loading: boolean
@@ -11,6 +14,7 @@ type TProps = {
 function AddressForm(props: TProps) {
 	const homePageStateContext = useHomePageContext()
 	const musicManager = useMusicManager()
+	const { theme } = useTheme()
 
 	useEffect(() => {
 		musicManager.changeSong(`resources/audio/BachgroundMuseik.mp3`, true)
@@ -85,65 +89,44 @@ function AddressForm(props: TProps) {
 	)
 
 	return (
-		<form onSubmit={handleSubmit} className="w-full" autoComplete="on">
-			<div className="max-w-2xl mx-auto mb-8">
-				<div className="bg-gray-900 p-6 rounded-lg border-4 border-cyan-400 shadow-lg shadow-cyan-400/50">
+		<form onSubmit={handleSubmit} className="w-full px-2 sm:px-4" autoComplete="on">
+			<div className="max-w-2xl mx-auto mb-4 sm:mb-6 md:mb-8">
+				<div
+					className={`bg-${theme.colors.background} p-3 sm:p-4 md:p-6 rounded-lg border-2 sm:border-4 border-${theme.colors.cardBorder} shadow-lg shadow-${theme.colors.shadow}`}
+				>
 					{/* Quick Location Input */}
-					<div className="mb-6">
-						<div
-							className={`block text-cyan-300 text-sm font-bold mb-2 uppercase tracking-wider ${
-								homePageStateContext.activeSection === "onelineaddress" ? "animate-bounce" : ""
-							}`}
-						>
-							Quick Search
-						</div>
-						<input
+					<div className="mb-4 sm:mb-6">
+						<Input
 							autoComplete="one-line-address"
 							type="text"
 							value={homePageStateContext.formState.oneLineAddress ?? ""}
 							onInput={setOneLineAddress}
-							placeholder="Enter Your Address • Up for the Challenge? • It Doesn't Work"
-							className="w-full px-3 py-2 bg-black border-2 border-green-400 text-green-300 font-mono focus:outline-none focus:border-purple-400 focus:shadow-lg focus:shadow-cyan-400/50"
+							placeholder="Enter Your Address"
+							label={homePageStateContext.activeSection === "onelineaddress" ? "Quick Search 🔍" : "Quick Search"}
+							labelColor={`text-${theme.colors.text}`}
 							onKeyDown={handleSubmitOnEnterKeydownEvent}
 							onFocus={() => setActiveSection("onelineaddress")}
 							onBlur={() => setActiveSection(null)}
 						/>
 					</div>
 
-					<div className="text-center mb-6">
-						<div className="text-purple-400 font-bold uppercase tracking-widest text-sm">- OR -</div>
+					<div className="text-center mb-4 sm:mb-6">
+						<div className={`text-${theme.colors.accent} font-bold uppercase tracking-widest text-xs sm:text-sm`}>
+							- OR -
+						</div>
 					</div>
 
 					<div
-						className={`block text-yellow-300 text-sm font-bold mb-2 uppercase tracking-wider ${
+						className={`block text-yellow-300 text-xs sm:text-sm font-bold mb-2 sm:mb-3 uppercase tracking-wider ${
 							homePageStateContext.activeSection === "address" ? "animate-bounce" : ""
 						}`}
 					>
 						Enter Full Address
 					</div>
 
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-						{/* <div>
-							<div className="block text-pink-300 text-xs font-bold mb-1 uppercase tracking-wider">Street Number</div>
-							<input
-								name="address-line1"
-								autoComplete="address-line1"
-								type="text"
-								value={homePageStateContext.formState.address?.streetNumber ?? ""}
-								onInput={(e) =>
-									homePageStateContext.dispatch({ action: "updateStreetNumber", payload: e.target.value })
-								}
-								placeholder="123"
-								className="w-full px-2 py-2 bg-black border-2 border-pink-400 text-pink-300 font-mono text-sm focus:outline-none focus:border-green-400 focus:shadow-lg focus:shadow-pink-400/50"
-								onKeyDown={handleMoveNextKeydownEvent}
-								onFocus={() => setActiveSection("address")}
-								onBlur={() => setActiveSection(null)}
-							/>
-						</div> */}
-
-						<div>
-							<div className="block text-pink-300 text-xs font-bold mb-1 uppercase tracking-wider">Street</div>
-							<input
+					<div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6">
+						<div className="sm:col-span-2">
+							<Input
 								type="text"
 								name="address-line1"
 								autoComplete="address-line1"
@@ -152,7 +135,8 @@ function AddressForm(props: TProps) {
 									homePageStateContext.dispatch({ action: "updateStreetName", payload: e.currentTarget.value })
 								}
 								placeholder="Main Street"
-								className="w-full px-2 py-2 bg-black border-2 border-pink-400 text-pink-300 font-mono text-sm focus:outline-none focus:border-green-400 focus:shadow-lg focus:shadow-pink-400/50"
+								label="Street"
+								labelColor="text-pink-300"
 								onKeyDown={handleMoveNextKeydownEvent}
 								onFocus={() => setActiveSection("address")}
 								onBlur={() => setActiveSection(null)}
@@ -160,15 +144,15 @@ function AddressForm(props: TProps) {
 						</div>
 
 						<div>
-							<div className="block text-yellow-300 text-xs font-bold mb-1 uppercase tracking-wider">City</div>
-							<input
+							<Input
 								type="text"
 								name="address-level2"
 								autoComplete="address-level2"
 								value={homePageStateContext.formState.address?.city ?? ""}
 								onInput={(e) => homePageStateContext.dispatch({ action: "updateCity", payload: e.currentTarget.value })}
 								placeholder="San Francisco"
-								className="w-full px-2 py-2 bg-black border-2 border-purple-400 text-purple-300 font-mono text-sm focus:outline-none focus:border-cyan-400 focus:shadow-lg focus:shadow-purple-400/50"
+								label="City"
+								labelColor="text-yellow-300"
 								onKeyDown={handleMoveNextKeydownEvent}
 								onFocus={() => setActiveSection("address")}
 								onBlur={() => setActiveSection(null)}
@@ -176,8 +160,7 @@ function AddressForm(props: TProps) {
 						</div>
 
 						<div>
-							<div className="block text-purple-300 text-xs font-bold mb-1 uppercase tracking-wider">State</div>
-							<input
+							<Input
 								type="text"
 								name="address-level1"
 								autoComplete="address-level1"
@@ -186,16 +169,16 @@ function AddressForm(props: TProps) {
 									homePageStateContext.dispatch({ action: "updateState", payload: e.currentTarget.value })
 								}
 								placeholder="CA"
-								className="w-full px-2 py-2 bg-black border-2 border-purple-400 text-purple-300 font-mono text-sm focus:outline-none focus:border-cyan-400 focus:shadow-lg focus:shadow-purple-400/50"
+								label="State"
+								labelColor="text-purple-300"
 								onKeyDown={handleMoveNextKeydownEvent}
 								onFocus={() => setActiveSection("address")}
 								onBlur={() => setActiveSection(null)}
 							/>
 						</div>
 
-						<div>
-							<div className="block text-cyan-300 text-xs font-bold mb-1 uppercase tracking-wider">ZIP Code</div>
-							<input
+						<div className="sm:col-span-2">
+							<Input
 								type="text"
 								name="postal-code"
 								autoComplete="postal-code"
@@ -204,7 +187,8 @@ function AddressForm(props: TProps) {
 									homePageStateContext.dispatch({ action: "updatePostalCode", payload: e.currentTarget.value })
 								}
 								placeholder="94102"
-								className="w-full px-2 py-2 bg-black border-2 border-cyan-400 text-cyan-300 font-mono text-sm focus:outline-none focus:border-green-400 focus:shadow-lg focus:shadow-cyan-400/50"
+								label="ZIP Code"
+								labelColor="text-cyan-300"
 								onKeyDown={handleMoveNextKeydownEvent}
 								onFocus={() => setActiveSection("address")}
 								onBlur={() => setActiveSection(null)}
@@ -212,29 +196,32 @@ function AddressForm(props: TProps) {
 						</div>
 					</div>
 
-					<div className="flex space-x-4">
-						<button
+					<div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4">
+						<Button
 							type="submit"
+							variant="secondary"
 							disabled={homePageStateContext.appState === "loading_weather"}
-							className="transition:200ms flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-2 px-4 uppercase tracking-wider border-2 border-white hover:from-pink-600 hover:to-purple-600 transition-all duration-300 shadow-lg shadow-purple-500/50 disabled:opacity-50"
+							className="flex-1"
 						>
 							{props.loading ? "SCANNING..." : "GET WEATHER"}
-						</button>
-						<button
+						</Button>
+						<Button
 							type="button"
+							variant="primary"
 							onClick={getCurrentLocation}
 							disabled={homePageStateContext.appState === "loading_weather"}
-							className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold py-2 px-4 uppercase tracking-wider border-2 border-white hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 shadow-lg shadow-cyan-500/50"
+							className="sm:w-auto"
 						>
 							GPS
-						</button>
-						<button
+						</Button>
+						<Button
 							type="button"
+							variant="danger"
 							onClick={clearAddressForm}
-							className="bg-gradient-to-r from-red-600 to-orange-600 text-white font-bold py-2 px-4 uppercase tracking-wider border-2 border-white hover:from-orange-600 hover:to-red-600 duration-300 shadow-lg shadow-red-500/50"
+							className="sm:w-auto"
 						>
 							CLEAR
-						</button>
+						</Button>
 					</div>
 				</div>
 			</div>
