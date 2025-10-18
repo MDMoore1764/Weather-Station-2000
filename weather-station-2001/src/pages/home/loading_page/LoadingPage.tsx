@@ -58,9 +58,9 @@ function LoadingPage(props: TProps) {
 	}, [musicContext])
 
 	return (
-		<div className="text-center mb-8 flex-1">
+		<div className="text-center mb-4 sm:mb-6 md:mb-8 flex-1 px-2 sm:px-4">
 			<button
-				className="fixed bottom-2 left-2 text-red-600 border-4 rounded-full border-red-500 hover:shadow-lg hover:shadow-red-500"
+				className="fixed bottom-2 left-2 text-red-600 border-2 sm:border-4 rounded-full border-red-500 hover:shadow-lg hover:shadow-red-500 text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-2 z-50"
 				onClick={() => {
 					homePageContext.dispatch({
 						action: "setSubmissionState",
@@ -75,33 +75,35 @@ function LoadingPage(props: TProps) {
 			>
 				ABORT SCAN
 			</button>
-			<div className="text-6xl text-yellow-400 mb-6 animate-bounce font-bold">⚡ SCANNING ATMOSPHERE ⚡</div>
+			<div className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl text-yellow-400 mb-4 sm:mb-6 animate-bounce font-bold px-2">
+				⚡ SCANNING ATMOSPHERE ⚡
+			</div>
 
-			<div className="relative flex justify-center items-center mb-8">
-				<div className="absolute w-32 h-32 rounded-full border-4 border-cyan-500 animate-ping opacity-20"></div>
+			<div className="relative flex justify-center items-center mb-4 sm:mb-6 md:mb-8">
+				<div className="absolute w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full border-2 sm:border-4 border-cyan-500 animate-ping opacity-20"></div>
 				<div
-					className="absolute w-24 h-24 rounded-full border-4 border-pink-500 animate-ping opacity-30"
+					className="absolute w-20 h-20 sm:w-22 sm:h-22 md:w-24 md:h-24 rounded-full border-2 sm:border-4 border-pink-500 animate-ping opacity-30"
 					style={{ animationDelay: "0.5s" }}
 				></div>
 				<div
-					className="absolute w-16 h-16 rounded-full border-4 border-yellow-500 animate-ping opacity-40"
+					className="absolute w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 sm:border-4 border-yellow-500 animate-ping opacity-40"
 					style={{ animationDelay: "1s" }}
 				></div>
 
-				<div className="relative w-20 h-20 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 animate-spin shadow-2xl shadow-purple-500/80">
+				<div className="relative w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 animate-spin shadow-2xl shadow-purple-500/80">
 					<div className="absolute inset-2 rounded-full bg-black flex items-center justify-center">
-						<div className="w-8 h-8 rounded-full bg-gradient-to-r from-yellow-400 to-red-500 animate-pulse"></div>
+						<div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-r from-yellow-400 to-red-500 animate-pulse"></div>
 					</div>
-					<div className="absolute top-0 left-1/2 w-2 h-2 bg-cyan-400 rounded-full transform -translate-x-1/2 -translate-y-1 shadow-lg shadow-cyan-400/80"></div>
-					<div className="absolute bottom-0 left-1/2 w-2 h-2 bg-pink-400 rounded-full transform -translate-x-1/2 translate-y-1 shadow-lg shadow-pink-400/80"></div>
-					<div className="absolute left-0 top-1/2 w-2 h-2 bg-yellow-400 rounded-full transform -translate-x-1 -translate-y-1/2 shadow-lg shadow-yellow-400/80"></div>
-					<div className="absolute right-0 top-1/2 w-2 h-2 bg-green-400 rounded-full transform translate-x-1 -translate-y-1/2 shadow-lg shadow-green-400/80"></div>
+					<div className="absolute top-0 left-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-cyan-400 rounded-full transform -translate-x-1/2 -translate-y-1 shadow-lg shadow-cyan-400/80"></div>
+					<div className="absolute bottom-0 left-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-pink-400 rounded-full transform -translate-x-1/2 translate-y-1 shadow-lg shadow-pink-400/80"></div>
+					<div className="absolute left-0 top-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-yellow-400 rounded-full transform -translate-x-1 -translate-y-1/2 shadow-lg shadow-yellow-400/80"></div>
+					<div className="absolute right-0 top-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full transform translate-x-1 -translate-y-1/2 shadow-lg shadow-green-400/80"></div>
 				</div>
 			</div>
 
 			<LoadingBar text={"ANALYZING WEATHER DATA..."} percent={percentState} />
 
-			<div className="space-y-2 font-mono text-sm text-left h-65 w-80" style={{ margin: "0 auto" }}>
+			<div className="space-y-1 sm:space-y-2 font-mono text-xs sm:text-sm text-left max-w-xs sm:max-w-sm md:max-w-md mx-auto px-2">
 				{visbleStateTextSet[0] && (
 					<div className="text-pink-400 animate-pulse">▶ Scanning for weather satellites...</div>
 				)}
@@ -145,8 +147,8 @@ function LoadingPage(props: TProps) {
 				></div>
 			</div>
 
-			<div className="mt-8 relative">
-				<div className="w-64 h-32 mx-auto border border-cyan-400/30 relative overflow-hidden">
+			<div className="mt-4 sm:mt-6 md:mt-8 relative">
+				<div className="w-48 h-24 sm:w-56 sm:h-28 md:w-64 md:h-32 mx-auto border border-cyan-400/30 relative overflow-hidden">
 					<div
 						className="absolute inset-0"
 						style={{
@@ -167,7 +169,9 @@ function LoadingPage(props: TProps) {
 					></div>
 				</div>
 
-				<div className="text-cyan-400 text-xs font-mono mt-2 uppercase tracking-wider">RADAR SCANNING...</div>
+				<div className="text-cyan-400 text-xs sm:text-sm font-mono mt-2 uppercase tracking-wider">
+					RADAR SCANNING...
+				</div>
 			</div>
 		</div>
 	)
